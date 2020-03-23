@@ -8,7 +8,8 @@ from PyQt5.QtWidgets import QApplication, QMainWindow
 import serialprocess as mySerial
 from PyQt5.QtWidgets import QMessageBox
 import configutil as Config
-import actionhandler as acHandler
+import receivehandler as acHandler
+from main import global_data as g_data
 
 
 class MyMainWindow(QMainWindow, UI_main.Ui_MainWindow):
@@ -21,8 +22,10 @@ class MyMainWindow(QMainWindow, UI_main.Ui_MainWindow):
         self.actionTime.setChecked(self.cfgPar.is_show_time())
         self.actionTag.setChecked(self.cfgPar.is_show_tag())
         self.actionFile.setChecked(self.cfgPar.is_show_level())
+        g_data.rec_show['time'] = True if self.actionTime.isChecked() else False
+        g_data.rec_show['tag'] = True if self.actionTime.isChecked() else False
+        g_data.rec_show['level'] = True if self.actionTime.isChecked() else False
 
-        self.act = acHandler.actionHandler()              #实例文本处理类
         # 子窗口需要为主窗口的成员变量，否则子窗口会一闪而过
         self.newConnect = NC_handler.MyNewConnect()#新连接的窗口
         self.openConnect = OC_handler.MyOpenConnect()#打开的窗口
@@ -126,12 +129,9 @@ class MyMainWindow(QMainWindow, UI_main.Ui_MainWindow):
                 self.textEditRecvive.insertPlainText(out_s)
             else:# 串口接收到的字符串为b'123',要转化成unicode字符串才能输出到窗口中去
                 out_s = data.decode('utf-8')
-                tag_s = ''
-                lvl_s = str(out_s).
-
-                if self.cfgPar.is_show_time():
-                    out_s = self.act.showHandler.show_time() + ' | ' + out_s
-                self.textEditRecvive.insertPlainText()
+                data_s = acHandler.show_parse(out_s)
+            #    print(out_s+"stop")
+                self.textEditRecvive.insertPlainText(out_s)
             textCursor = self.textEditRecvive.textCursor()
             textCursor.movePosition(textCursor.End)
             self.textEditRecvive.setTextCursor(textCursor)
@@ -141,28 +141,19 @@ class MyMainWindow(QMainWindow, UI_main.Ui_MainWindow):
             pass
 
     def slot_show_time(self):
-        value = ''
-        if self.actionTime.isChecked():
-            value = '1'
-        else:
-            value = '0'
-        self.cfgPar.set_config('showCfg', 'show_time', value)
+        value = True if self.actionTime.isChecked() else False
+        g_data.rec_show['time'] = value
+        self.cfgPar.set_config('showCfg', 'show_time', str(value))
 
     def slot_show_tag(self):
-        value = ''
-        if self.actionTag.isChecked():
-            value = '1'
-        else:
-            value = '0'
-        self.cfgPar.set_config('showCfg', 'show_tag', value)
+        value = True if self.actionTime.isChecked() else False
+        g_data.rec_show['tag'] = value
+        self.cfgPar.set_config('showCfg', 'show_tag', str(value))
 
     def slot_show_level(self):
-        value = ''
-        if self.actionFile.isChecked():
-            value = '1'
-        else:
-            value = '0'
-        self.cfgPar.set_config('showCfg', 'show_level', value)
+        value = True if self.actionTime.isChecked() else False
+        g_data.rec_show['level'] = value
+        self.cfgPar.set_config('showCfg', 'show_level', str(value))
         pass
 
     def slot_filter_by_level(self):
