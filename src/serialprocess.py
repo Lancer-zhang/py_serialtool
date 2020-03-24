@@ -6,6 +6,7 @@ import time
 from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtCore import QTimer, QObject
 from PyQt5.QtCore import pyqtSignal
+from receivehandler import receiveHandler
 
 
 class serialProcess(QObject):
@@ -27,6 +28,7 @@ class serialProcess(QObject):
         # self.timer_rec = QTimer()
         # self.timer_rec.timeout.connect(self.port_receive)
         self.read_thread = readThread()
+        self.rec = receiveHandler()
 
     def port_check(self):
         # 检测所有存在的串口，将信息存储在字典中
@@ -46,7 +48,7 @@ class serialProcess(QObject):
     def port_connect(self):
         try:
             if not self.serial.isOpen():
-                print("open com")
+                print("open " + self.serial.port)
                 self.serial.open()
                 if self.serial.isOpen():
                     self.read_thread.start(self.port_receive)
@@ -62,7 +64,7 @@ class serialProcess(QObject):
         if self.serial.isOpen():
             #   self.timer_rec.stop()
             self.read_thread.stop()
-            self.SerialSignal.disconnect()
+            #   self.SerialSignal.disconnect()
             # self.timer_send.stop()
             try:
                 self.serial.close()
@@ -77,17 +79,17 @@ class serialProcess(QObject):
 
     def port_receive(self):
         while self.read_thread.alive:
+            self.read_thread.waiting()
             try:
                 num = self.serial.inWaiting()
             except:
                 self.port_close()
                 return None
-            if num > 2:
+            if num > 1:
                 data = self.serial.read(num)
-                self.SerialSignal.emit(0, data)
-
-        self.read_thread.waitEnd.set()
-        self.read_thread.alive = False
+                self.rec.rec_parse(data)
+              #  self.SerialSignal.emit(0, data)
+        print('stop-------\r\n')
 
 
 class readThread:
@@ -97,14 +99,16 @@ class readThread:
         self.waitEnd = None
 
     def waiting(self):
-        if not self.waitEnd is None:
+        if self.waitEnd is not None:
             self.waitEnd.wait()
 
-    def SetStopEvent(self):
-        if not self.waitEnd is None:
+    def pause(self):
+        if self.waitEnd is not None:
+            self.waitEnd.clear()
+
+    def resume(self):
+        if self.waitEnd is not None:
             self.waitEnd.set()
-        self.alive = False
-        self.stop()
 
     def start(self, reader):
         self.waitEnd = threading.Event()
@@ -112,8 +116,10 @@ class readThread:
         self.thread_read = threading.Thread(target=reader)
         self.thread_read.setDaemon(1)
         self.thread_read.start()
+        self.resume()
         return True
 
     def stop(self):
         self.alive = False
+        self.resume()
         self.thread_read.join()

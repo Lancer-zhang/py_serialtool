@@ -8,8 +8,8 @@ from PyQt5.QtWidgets import QApplication, QMainWindow
 import serialprocess as mySerial
 from PyQt5.QtWidgets import QMessageBox
 import configutil as Config
-import receivehandler as acHandler
 from main import global_data as g_data
+import re
 
 
 class MyMainWindow(QMainWindow, UI_main.Ui_MainWindow):
@@ -129,8 +129,6 @@ class MyMainWindow(QMainWindow, UI_main.Ui_MainWindow):
                 self.textEditRecvive.insertPlainText(out_s)
             else:# 串口接收到的字符串为b'123',要转化成unicode字符串才能输出到窗口中去
                 out_s = data.decode('utf-8')
-                data_s = acHandler.show_parse(out_s)
-            #    print(out_s+"stop")
                 self.textEditRecvive.insertPlainText(out_s)
             textCursor = self.textEditRecvive.textCursor()
             textCursor.movePosition(textCursor.End)

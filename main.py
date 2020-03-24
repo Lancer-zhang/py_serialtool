@@ -4,6 +4,7 @@ import mainwindowhandler as UI
 
 
 class global_data:
+    level_flag = ['D ']
     rec_show = {'time': True, 'tag': True, 'level': True}
     rec_filter = []
 
