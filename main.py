@@ -7,6 +7,7 @@ class global_data:
     level_flag = ['D ']
     rec_show = {'time': True, 'tag': True, 'level': True}
     rec_filter = []
+    rec_parse = {}
 
 
 if __name__ == '__main__':

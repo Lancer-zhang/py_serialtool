@@ -10,7 +10,7 @@ from receivehandler import receiveHandler
 
 
 class serialProcess(QObject):
-    SerialSignal = pyqtSignal(int, bytes)
+    SerialSignal = pyqtSignal(str, bytes)
 
     def __init__(self, parent=None):
         super(serialProcess, self).__init__(parent)
@@ -87,8 +87,8 @@ class serialProcess(QObject):
                 return None
             if num > 1:
                 data = self.serial.read(num)
-                self.rec.rec_parse(data)
-              #  self.SerialSignal.emit(0, data)
+                self.rec.rec_str_parse(data)
+                self.SerialSignal.emit('receive', data)
         print('stop-------\r\n')
 
 

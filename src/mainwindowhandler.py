@@ -120,7 +120,7 @@ class MyMainWindow(QMainWindow, UI_main.Ui_MainWindow):
         self.newConnect.NewConSignal.disconnect()
 
     def slot_Serial_emit(self, flag, data):
-        if flag == 0:  # rec
+        if flag == 'receive':  # rec
             # hex显示
             if self.cfgPar.get_show_format() == 'hex':
                 out_s = ''
@@ -133,7 +133,7 @@ class MyMainWindow(QMainWindow, UI_main.Ui_MainWindow):
             textCursor = self.textEditRecvive.textCursor()
             textCursor.movePosition(textCursor.End)
             self.textEditRecvive.setTextCursor(textCursor)
-        elif flag == 1:  # send
+        elif flag == 'send':  # send
             pass
         else:
             pass
