@@ -50,6 +50,9 @@ class receiveHandler:
     def rec_hex_parse(self, data):
         length = len(data)
         i = 0
+        while i < length:
+            if data[i] == 0x55 and (i+63)<(length-1):
+                pass
 
     def show_handler(self, data):
         out_str = ''

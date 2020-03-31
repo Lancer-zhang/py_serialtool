@@ -101,6 +101,8 @@ class MyMainWindow(QMainWindow, UI_main.Ui_MainWindow):
             self.ser.port_connect()
             if self.ser.serial.isOpen():
                 self.textEditRecvive.insertPlainText(dic['port'] + " is connected\r\n")
+            else:
+                self.textEditRecvive.insertPlainText(dic['port'] + " can not be connected\r\n")
         else:
             pass
         self.openConnect.OpenConSignal.disconnect()
@@ -112,6 +114,7 @@ class MyMainWindow(QMainWindow, UI_main.Ui_MainWindow):
             self.ser.port_connect()
             if self.ser.serial.isOpen():
                 self.textEditRecvive.insertPlainText(dic['port'] + " is connected\r\n")
+                self.actionDisconnect.setEnabled(True)
         elif flag == 1:  # ok
             self.cfgPar.add_serial_config(dic)
             pass

@@ -83,6 +83,7 @@ class Ui_Dialog(object):
         self.tableWidget.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
         self.tableWidget.setSelectionMode(QtWidgets.QAbstractItemView.SingleSelection)
         self.tableWidget.horizontalHeader().setHighlightSections(False)
+        self.tableWidget.horizontalHeader().setStyleSheet("color: blue;")
         self.tableWidget.setRowCount(0)
         self.tableWidget.setColumnCount(4)
         self.tableWidget.setObjectName("tableWidget")

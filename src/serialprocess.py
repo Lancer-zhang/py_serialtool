@@ -47,14 +47,14 @@ class serialProcess(QObject):
 
     def port_connect(self):
         try:
-            if not self.serial.isOpen():
+            if self.serial is not None and not self.serial.isOpen():
                 print("open " + self.serial.port)
                 self.serial.open()
                 if self.serial.isOpen():
                     self.read_thread.start(self.port_receive)
 
         except:
-            QMessageBox.critical(self, "Port Error", "此串口不能被打开！")
+            print("can not open " + self.serial.port)
             return None
         # 打开串口接收定时器，周期为2ms
 

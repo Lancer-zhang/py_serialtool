@@ -69,6 +69,7 @@ class Ui_MainWindow(object):
         self.actionDisconnect = QtWidgets.QAction(MainWindow)
         self.actionDisconnect.setObjectName("actionDisconnect")
         self.actionRe_Connect = QtWidgets.QAction(MainWindow)
+        self.actionRe_Connect.setEnabled(False)
         self.actionRe_Connect.setObjectName("actionRe_Connect")
         self.actionImport = QtWidgets.QAction(MainWindow)
         self.actionImport.setObjectName("actionImport")
