@@ -9,7 +9,7 @@ import serialprocess as mySerial
 from PyQt5.QtWidgets import QMessageBox
 import configutil as Config
 from main import global_data as g_data
-import re
+import binascii
 
 
 class MyMainWindow(QMainWindow, UI_main.Ui_MainWindow):
@@ -126,13 +126,13 @@ class MyMainWindow(QMainWindow, UI_main.Ui_MainWindow):
         if flag == 'receive':  # rec
             # hex显示
             if self.cfgPar.get_show_format() == 'hex':
+                bytes_16 = binascii.b2a_hex(data)
                 out_s = ''
                 for i in range(0, len(data)):
-                    out_s = out_s + '{:02X}'.format(data[i]) + ' '
+                    out_s = out_s + '{:02X}'.format(bytes_16[i]) + ' '
                 self.textEditRecvive.insertPlainText(out_s)
-            else:# 串口接收到的字符串为b'123',要转化成unicode字符串才能输出到窗口中去
-                out_s = data.decode('utf-8')
-                self.textEditRecvive.insertPlainText(out_s)
+            else:
+                self.textEditRecvive.insertPlainText(data)
             textCursor = self.textEditRecvive.textCursor()
             textCursor.movePosition(textCursor.End)
             self.textEditRecvive.setTextCursor(textCursor)

@@ -10,10 +10,12 @@ import mainwindowhandler as UI
 
 
 class global_data:
-    level_flag = ['D ']
+    level_flag = {'d': 'debug', 'debug': 'debug',
+                  'i': 'info', 'info': 'info',
+                  'w': 'warn', 'warn': 'warn',
+                  'e': 'error', 'error': 'error'}
     rec_show = {'time': True, 'tag': True, 'level': True}
-    rec_filter = []
-    rec_parse = {}
+    rec_filter = {'level': ['error', 'warn', 'info'], 'tag': []}
 
 
 if __name__ == '__main__':
