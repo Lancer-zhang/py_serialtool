@@ -62,6 +62,15 @@ class receiveHandler:
             data_s = st[9:].strip()
             if lvl_s not in g_data.level_flag or g_data.level_flag[lvl_s] not in g_data.rec_filter['level']:
                 continue
+            if len(g_data.rec_filter['tag']) is not 0 and tag_s not in g_data.rec_filter['tag']:
+                continue
+            if len(g_data.rec_filter['content']) is not 0:
+                has_content = False
+                for content in g_data.rec_filter['content']:
+                    if data_s.find(content) is not -1:
+                        has_content = True
+                if has_content is False:
+                    continue
             out_str = out_str + '['
             if g_data.rec_show['level']:
                 out_str = out_str + lvl_s + ' '

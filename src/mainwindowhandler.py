@@ -61,12 +61,16 @@ class MyMainWindow(QMainWindow, UI_main.Ui_MainWindow):
 
     def slot_SendMessage(self):
         text = self.lineEditSend.currentText().strip()
+        text_list = text.split(' ')
         if "" != text:
-            if text.split(' ')[0] == 'filter':
-                pass
-            elif text.split(' ')[0] == 'config':
-                cfg_list = text.split(' ')
-                self.cfgPar.set_config(cfg_list[1], cfg_list[2], cfg_list[3])
+            if text_list[0] == 'filter':
+                if text_list[1] in g_data.rec_filter:
+                    print(text_list)
+                    g_data.rec_filter[text_list[1]] = text_list[1:]
+                    print(g_data.rec_filter[text_list[1]])
+            elif text_list[0] == 'config':
+                if len(text_list) is 4:
+                    self.cfgPar.set_config(text_list[1], text_list[2], text_list[3])
             else:
                 if self.cfgPar.get_send_format() == 'hex':
                     send_list = []
