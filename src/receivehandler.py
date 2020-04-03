@@ -14,10 +14,15 @@ class receiveHandler:
 
     def rec_str_parse(self, data):
         out_s = []
-        s_list = str(data, encoding="utf-8").split('\r\n')
-        str_list = [st for st in s_list if st != '']
+        str_list = []
+        data_s = str(data, encoding="utf-8")
+        if re.search(r'[\r\n]', data):
+            s_list = data_s.split('\r\n')
+            str_list = [st for st in s_list if st != '']
+        else:
+            str_list = data_s
         print('-----start-----')
-        #print(str_list)
+        print(str_list)
         list_len = len(str_list)
         i = 0
         while i < list_len:
@@ -39,11 +44,13 @@ class receiveHandler:
             if self.pre_complete and self.pre_str != '':
                 self.pre_complete = False
                 out_s.append(self.pre_str)
+                print("pre_str"+self.pre_str)
                 self.pre_str = ''
             if current_str != '':
                 out_s.append(current_str)
+                print("current_str" + current_str)
             i = i + 1
-            print(out_s)
+        print(out_s)
         return self.show_and_filter_handler(out_s)
 
     def rec_hex_parse(self, data):
@@ -56,7 +63,8 @@ class receiveHandler:
     def show_and_filter_handler(self, data):
         out_str = ''
         for st in data:
-            lvl_s = st[0:2].strip()
+            print(st)
+            lvl_s = st[0:2].strip().lower()
             tag_s = st[3:9].strip()
             time_s = time.strftime('%H:%M:%S')
             data_s = st[9:].strip()
@@ -67,11 +75,11 @@ class receiveHandler:
             if len(g_data.rec_filter['content']) is not 0:
                 has_content = False
                 for content in g_data.rec_filter['content']:
-                    if data_s.find(content) is not -1:
+                    rst = data_s.find(content)
+                    if rst is not -1:
                         has_content = True
                 if has_content is False:
                     continue
-            out_str = out_str + '['
             if g_data.rec_show['level']:
                 out_str = out_str + lvl_s + ' '
             if g_data.rec_show['time']:
@@ -79,7 +87,9 @@ class receiveHandler:
             if g_data.rec_show['tag']:
                 out_str = out_str + tag_s + ']: '
             out_str = out_str + data_s + '\r\n'
-        #print(out_str)
+            if g_data.plug_tool['ipc']:
+                ipc_s = data_s.split(']:')[1]
+                print(ipc_s)
         print('-----end-----')
         return out_str
 

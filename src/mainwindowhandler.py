@@ -53,8 +53,6 @@ class MyMainWindow(QMainWindow, UI_main.Ui_MainWindow):
         self.actionTime.triggered.connect(self.slot_show_time)   #显示时间
         self.actionFile.triggered.connect(self.slot_show_level)  # 显示等级
         self.actionTag.triggered.connect(self.slot_show_tag)  # 显示标签
-        self.actionBy.triggered.connect(self.slot_filter_by_tag)  # 根据标签筛选
-        self.actionBy_level.triggered.connect(self.slot_filter_by_level)  # 根据等级筛选
 
         self.actionIPC_parse.triggered.connect(self.slot_ipc_parser)
         self.ser.SerialSignal.connect(self.slot_Serial_emit)
@@ -66,8 +64,10 @@ class MyMainWindow(QMainWindow, UI_main.Ui_MainWindow):
             if text_list[0] == 'filter':
                 if text_list[1] in g_data.rec_filter:
                     print(text_list)
-                    g_data.rec_filter[text_list[1]] = text_list[1:]
+                    g_data.rec_filter[text_list[1]] = text_list[2:]
                     print(g_data.rec_filter[text_list[1]])
+                elif text_list[1] == 'reset':
+                    g_data.rec_filter = {'level': ['error', 'warn', 'info', 'debug'], 'tag': [], 'content': []}
             elif text_list[0] == 'config':
                 if len(text_list) is 4:
                     self.cfgPar.set_config(text_list[1], text_list[2], text_list[3])
@@ -105,6 +105,7 @@ class MyMainWindow(QMainWindow, UI_main.Ui_MainWindow):
             self.ser.port_connect()
             if self.ser.serial.isOpen():
                 self.textEditRecvive.insertPlainText(dic['port'] + " is connected\r\n")
+                self.actionRe_Connect.setEnabled(True)
             else:
                 self.textEditRecvive.insertPlainText(dic['port'] + " can not be connected\r\n")
         else:
@@ -119,6 +120,7 @@ class MyMainWindow(QMainWindow, UI_main.Ui_MainWindow):
             if self.ser.serial.isOpen():
                 self.textEditRecvive.insertPlainText(dic['port'] + " is connected\r\n")
                 self.actionDisconnect.setEnabled(True)
+                self.actionRe_Connect.setEnabled(True)
         elif flag == 1:  # ok
             self.cfgPar.add_serial_config(dic)
             pass
@@ -161,12 +163,7 @@ class MyMainWindow(QMainWindow, UI_main.Ui_MainWindow):
         self.cfgPar.set_config('showCfg', 'show_level', str(value))
         pass
 
-    def slot_filter_by_level(self):
-        pass
-
-    def slot_filter_by_tag(self):
-        pass
-
     def slot_ipc_parser(self):
-        pass
+        g_data.rec_filter = {'level': ['debug'], 'tag': ['ipc'], 'content': ['drv recv', 'drv send']}
+        g_data.plug_tool['ipc'] = True
 

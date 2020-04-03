@@ -15,7 +15,7 @@ class global_data:
                   'w': 'warn', 'warn': 'warn',
                   'e': 'error', 'error': 'error'}
     rec_show = {'time': True, 'tag': True, 'level': True}
-    rec_filter = {'level': ['error', 'warn', 'info'], 'tag': [], 'content': []}
+    rec_filter = {'level': ['error', 'warn', 'info', 'debug'], 'tag': [], 'content': []}
 
     plug_tool = {'ipc': False, 'plot': False}
 
