@@ -15,12 +15,14 @@ class receiveHandler:
     def rec_str_parse(self, data):
         out_s = []
         str_list = []
+        half_s = False
         data_s = str(data, encoding="utf-8")
         if re.search(r'[\r\n]', data):
             s_list = data_s.split('\r\n')
             str_list = [st for st in s_list if st != '']
         else:
-            str_list = data_s
+            str_list.append(data_s)
+            half_s = True
         print('-----start-----')
         print(str_list)
         list_len = len(str_list)
@@ -30,13 +32,19 @@ class receiveHandler:
             cur_s = re.sub(r'[\r\n]', '', str_list[i])
             pat = r'[EWID] \|[a-zA-Z]{2,4} '
             if re.search(pat, cur_s):
-                if i == 0:
-                    self.pre_complete = True
-                    current_str = cur_s
-                elif i == (list_len - 1):
-                    self.pre_str = cur_s
-                else:
-                    current_str = cur_s
+                if list_len == 1:
+                    if half_s:
+                        self.pre_str = cur_s
+                    else:
+                        current_str = cur_s
+                elif list_len > 1:
+                    if i == 0:
+                        self.pre_complete = True
+                        current_str = cur_s
+                    elif i == (list_len - 1):
+                        self.pre_str = cur_s
+                    else:
+                        current_str = cur_s
             else:
                 if i == 0:
                     self.pre_str = self.pre_str + cur_s
