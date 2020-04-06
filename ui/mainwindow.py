@@ -115,6 +115,7 @@ class Ui_MainWindow(object):
         self.actionClolor.setObjectName("actionClolor")
         self.actionIPC_parse = QtWidgets.QAction(MainWindow)
         self.actionIPC_parse.setObjectName("actionIPC_parse")
+        self.actionIPC_parse.setCheckable(True)
         self.actionBy_level = QtWidgets.QAction(MainWindow)
         self.actionBy_level.setObjectName("actionBy_level")
         self.actionBy = QtWidgets.QAction(MainWindow)

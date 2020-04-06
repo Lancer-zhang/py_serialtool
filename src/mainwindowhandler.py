@@ -164,6 +164,10 @@ class MyMainWindow(QMainWindow, UI_main.Ui_MainWindow):
         pass
 
     def slot_ipc_parser(self):
-        g_data.rec_filter = {'level': ['debug'], 'tag': ['ipc'], 'content': ['drv recv', 'drv send']}
-        g_data.plug_tool['ipc'] = True
+        if self.actionIPC_parse.isChecked():
+            g_data.rec_filter = {'level': ['debug'], 'tag': ['ipc'], 'content': ['drv recv', 'drv send']}
+            g_data.plug_tool['ipc'] = True
+        else:
+            g_data.rec_filter = {'level': ['error', 'warn', 'info', 'debug'], 'tag': [], 'content': []}
+            g_data.plug_tool['ipc'] = False
 

@@ -42,41 +42,17 @@ class ipc_parser:
 
         self.__ipc_unpack_result = ''
 
-    def createWidgets(self):
-        Label(self, text="InputData").grid(row=0)
-        Label(self, text="OutPutData").grid(row=1)
 
-        self.InputData = Entry(self, width=400)
-        self.InputData.grid(row=0, column=1)
-
-        self.OutPutData = Text(self, width=400, height=10)
-        self.OutPutData.grid(row=1, column=1)
-
-        self.StuffButton = Button(self, text='anylse', command=self.Stuff)
-        self.StuffButton.grid(row=2, column=0, sticky=W)
-
-        self.ClearButton = Button(self, text='clear', command=self.clear)
-        self.ClearButton.grid(row=2, column=1, sticky=W)
-
-    def clear(self):
-        self.InputData.delete(0, END)
-        self.OutPutData.delete('1.0', END)
-        self.InputData.focus()
-
-    def Stuff(self):
+    def Stuff(self, ipc_s):
         try:
-            input_bytes = bytes.fromhex(self.InputData.get().replace(' ', ''))
-            self.OutPutData.delete('1.0', END)
+            input_bytes = bytes.fromhex(ipc_s.replace(' ', ''))
             self.__ipc_unpack_result = ''
 
             self.__ipc_unpack(input_bytes)
             tmp_str = self.__ipc_unpack_result
-            self.OutPutData.insert(END, tmp_str)
-            self.OutPutData.focus()
+            return tmp_str
         except Exception as e:
             messagebox.showerror('Message', e)
-            self.OutPutData.delete('1.0', END)
-            self.InputData.focus()
         finally:
             None
 
@@ -84,22 +60,21 @@ class ipc_parser:
         self.__ipc_unpack_result = self.__ipc_unpack_result + s + '\n'
 
     def __ipc_unpack_ack(self):
-        self.__print_to_result('pt :%02X | cid:%02X | ack_sn:%02X | et:%02X | rws:%04X'
+        self.__print_to_result('pt:%02X cid:%02X ack_sn:%02X et:%02X rws:%04X'
                                % (self.__pt_unpack.value, self.__cid_unpack.value, self.__ack_sn_unpack.value,
                                   self.__et_unpack.value, self.__rws_unpack.value,))
 
     def __ipc_unpack_data(self):
-        self.__print_to_result('pt :%02X | cid:%02X | sn:%02X | len_app:%04X | app_num:%02X'
+        self.__print_to_result('pt:%02X cid:%02X sn:%02X len_app:%04X app_num:%02X'
                                % (self.__pt_unpack.value, self.__cid_unpack.value, self.__sn_unpack.value,
                                   self.__len_app_unpack.value, self.__appl_len_unpack.value))
 
         self.__appl_list = np.frombuffer(self.__appl_unpack, dtype=appl_data_t)
 
         for i in range(self.__appl_len_unpack.value):
-            self.__print_to_result('-------------')
             tmp = ''.join(
                 ["%02X " % x for x in self.__appl_list[i]['appl_data'][:self.__appl_list[i]['appl_len']]]).strip()
-            self.__print_to_result('appno :%02X| tag1:%02X | tag2:%02X | tag3:%02X | len: %02X| value: %s'
+            self.__print_to_result('appno:%02X tag1:%02X tag2:%02X tag3:%02X len:%02X value:%s'
                                    % (i, self.__appl_list[i]['tag1'], self.__appl_list[i]['tag2'],
                                       self.__appl_list[i]['tag3'],
                                       self.__appl_list[i]['appl_len'], tmp))

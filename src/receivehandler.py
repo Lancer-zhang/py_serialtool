@@ -1,6 +1,7 @@
 import time
 from main import global_data as g_data
 import re
+import ipcparser
 
 
 class receiveHandler:
@@ -8,6 +9,7 @@ class receiveHandler:
         self.pre_str = ''
         self.pre_complete = False
         self.last_sequence = -1
+        self.ipc = ipcparser.ipc_parser()
 
     def rec_parser(self, data):
         pass
@@ -97,7 +99,7 @@ class receiveHandler:
             out_str = out_str + data_s + '\r\n'
             if g_data.plug_tool['ipc']:
                 ipc_s = data_s.split(']:')[1]
-                print(ipc_s)
+                out_str = out_str + self.ipc.Stuff(ipc_s)
         print('-----end-----')
         return out_str
 
