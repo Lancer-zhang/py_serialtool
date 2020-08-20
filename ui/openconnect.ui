@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>打开</string>
   </property>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>6</x>
@@ -27,7 +27,7 @@
      <enum>QLayout::SetDefaultConstraint</enum>
     </property>
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0,0,0,0,0,0">
+     <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0,0,0">
       <property name="spacing">
        <number>0</number>
       </property>
@@ -56,82 +56,6 @@
         </property>
         <property name="text">
          <string>新建</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="pushButtonNSave">
-        <property name="maximumSize">
-         <size>
-          <width>40</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="autoFillBackground">
-         <bool>false</bool>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">background-color: rgba(255, 255, 255, 0);</string>
-        </property>
-        <property name="text">
-         <string>另存为</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="pushButtonCute">
-        <property name="maximumSize">
-         <size>
-          <width>40</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="autoFillBackground">
-         <bool>false</bool>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">background-color: rgba(255, 255, 255, 0);</string>
-        </property>
-        <property name="text">
-         <string>剪贴</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="pushButtonCopy">
-        <property name="maximumSize">
-         <size>
-          <width>40</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="autoFillBackground">
-         <bool>false</bool>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">background-color: rgba(255, 255, 255, 0);</string>
-        </property>
-        <property name="text">
-         <string>复制</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="pushButtonPaste">
-        <property name="maximumSize">
-         <size>
-          <width>40</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="autoFillBackground">
-         <bool>false</bool>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">background-color: rgba(255, 255, 255, 0);</string>
-        </property>
-        <property name="text">
-         <string>粘贴</string>
         </property>
        </widget>
       </item>
@@ -178,6 +102,19 @@
          <string>属性</string>
         </property>
        </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_2">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
       </item>
      </layout>
     </item>

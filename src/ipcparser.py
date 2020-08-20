@@ -20,12 +20,12 @@ appl_data_t = np.dtype({
 
 class ipc_parser:
     def __init__(self):
-        ###ipc dll
+        # ipc dll
         root_path = os.path.abspath(os.path.join(__file__, os.pardir, os.pardir))
         self.__ipc_dll_path = os.path.join(root_path, 'lib\\ipc_protocol.dll')
         self.__ipc_dll = ctypes.cdll.LoadLibrary(self.__ipc_dll_path)
 
-        ###unpack data
+        # unpack data
         self.__pt_unpack = c_ubyte(0)
         self.__cid_unpack = c_ubyte(0)
         self.__ack_sn_unpack = c_ubyte(0)
@@ -42,7 +42,6 @@ class ipc_parser:
 
         self.__ipc_unpack_result = ''
 
-
     def Stuff(self, ipc_s):
         try:
             input_bytes = bytes.fromhex(ipc_s.replace(' ', ''))
@@ -50,7 +49,9 @@ class ipc_parser:
 
             self.__ipc_unpack(input_bytes)
             tmp_str = self.__ipc_unpack_result
-            return tmp_str
+            tmp_list = self.__appl_list
+            self.__appl_list = []
+            return tmp_str, tmp_list
         except Exception as e:
             messagebox.showerror('Message', e)
         finally:
@@ -86,11 +87,11 @@ class ipc_parser:
                                                       byref(self.__rws_unpack), byref(self.__sn_unpack),
                                                       byref(self.__len_app_unpack), bytes(self.__appl_unpack),
                                                       byref(self.__appl_len_unpack))
-        if (0 != self.__ret_unpack):
+        if 0 != self.__ret_unpack:
             self.__print_to_result('unpack error,error num is%d' % (self.__ret_unpack))
             # self.__print_to_result('-------------')
         else:
-            if (2 == self.__pt_unpack.value):
+            if 2 == self.__pt_unpack.value:
                 self.__ipc_unpack_ack()
             else:
                 self.__ipc_unpack_data()

@@ -1,3 +1,5 @@
+import binascii
+
 import serial
 # pip install pyserial
 import serial.tools.list_ports
@@ -6,7 +8,6 @@ import time
 from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtCore import QTimer, QObject
 from PyQt5.QtCore import pyqtSignal
-from receivehandler import receiveHandler
 
 
 class serialProcess(QObject):
@@ -28,7 +29,6 @@ class serialProcess(QObject):
         # self.timer_rec = QTimer()
         # self.timer_rec.timeout.connect(self.port_receive)
         self.read_thread = readThread()
-        self.rec = receiveHandler()
 
     def port_check(self):
         # 检测所有存在的串口，将信息存储在字典中
@@ -47,7 +47,7 @@ class serialProcess(QObject):
 
     def port_connect(self):
         try:
-            if self.serial is not None and not self.serial.isOpen():
+            if self.serial.port is not None and not self.serial.isOpen():
                 print("open " + self.serial.port)
                 self.serial.open()
                 if self.serial.isOpen():
@@ -79,18 +79,17 @@ class serialProcess(QObject):
 
     def port_receive(self):
         while self.read_thread.alive:
-            self.read_thread.waiting()
-            time.sleep(0.1)
+            # self.read_thread.waiting()
+            time.sleep(0.05)  # 10ms
             try:
                 num = self.serial.inWaiting()
             except:
                 self.port_close()
                 return None
             data = self.serial.read(num)
-            num = self.serial.inWaiting()
-            if len(data) > 1 and num == 0:
-                self.SerialSignal.emit('receive', self.rec.rec_str_parse(data))
-        print('stop-------\r\n')
+            if len(data) > 0:
+                out_str = data.decode('utf-8', 'ignore')
+                self.SerialSignal.emit('receive', out_str)
 
 
 class readThread:

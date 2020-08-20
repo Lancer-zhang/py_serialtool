@@ -10,14 +10,8 @@ import mainwindowhandler as UI
 
 
 class global_data:
-    level_flag = {'d': 'debug', 'debug': 'debug',
-                  'i': 'info', 'info': 'info',
-                  'w': 'warn', 'warn': 'warn',
-                  'e': 'error', 'error': 'error'}
-    rec_show = {'time': True, 'tag': True, 'level': True}
-    rec_filter = {'level': ['error', 'warn', 'info', 'debug'], 'tag': [], 'content': []}
-
-    plug_tool = {'ipc': False, 'plot': False}
+    rec_show = {'time': True, 'format': 'asc'}
+    send_show = {'format': 'asc'}
 
 
 if __name__ == '__main__':
