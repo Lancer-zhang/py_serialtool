@@ -1,9 +1,10 @@
 import sys
 import os
+
 path = os.getcwd()
-sys.path.append(path+'\\src')
-sys.path.append(path+'\\ui')
-sys.path.append(path+'\\lib')
+sys.path.append(path + '\\src')
+sys.path.append(path + '\\ui')
+sys.path.append(path + '\\lib')
 
 from PyQt5.QtWidgets import QApplication, QMainWindow
 import mainwindowhandler as UI

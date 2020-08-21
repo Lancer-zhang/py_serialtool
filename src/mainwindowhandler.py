@@ -1,4 +1,6 @@
 from PyQt5 import QtGui
+from PyQt5.QtGui import QTextCursor
+
 import mainwindow as UI_main
 import newconnecthandler as NC_handler
 import openconnecthandler as OC_handler
@@ -32,6 +34,7 @@ class MyMainWindow(QMainWindow, UI_main.Ui_MainWindow):
         self.buildConnect()
 
         self.slot_change_transfer()
+        self.slot_OpenConnect()
         # TODO
         self.lineEditinputIPC_file.setEnabled(False)
 
@@ -42,8 +45,17 @@ class MyMainWindow(QMainWindow, UI_main.Ui_MainWindow):
     def closeEvent(self, a0: QtGui.QCloseEvent) -> None:
         reply = QMessageBox.question(self, 'Serial Tool', "是否要退出程序？", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
         if reply == QMessageBox.Yes:
+            if self.lineEditSend.count() > 0:
+                count = self.lineEditSend.count()
+                i = 0
+                while i < count:
+                    text = self.lineEditSend.itemText(i)
+                    self.cfgPar.set_config('sendRecord', 'send'+str(i), text)
+                    i = i + 1
             self.cfgPar.write_to_config()
             self.ser.port_close()
+            self.newConnect.destroy()
+            self.openConnect.destroy()
             self.destroy()
             a0.accept()
         else:
@@ -61,8 +73,33 @@ class MyMainWindow(QMainWindow, UI_main.Ui_MainWindow):
         self.actionSendHEX.setChecked((self.actionSendASCII.isChecked() is False))
         g_data.send_show['format'] = self.cfgPar.get_send_format()
 
+        self.tabWidget.setVisible(self.cfgPar.get_right_hide() is '0')
+        self.actionhideright.setChecked(self.cfgPar.get_right_hide() is '1')
+        if self.cfgPar.get_send_line_hide() is '1':
+            self.actionhideSend.setChecked(True)
+            self.buttonSend.setVisible(False)
+            self.lineEditSend.setVisible(False)
+            self.lineEdit.setVisible(False)
+        else:
+            self.actionhideSend.setChecked(False)
+            if self.cfgPar.get_send_button_hide() is '1':
+                self.actionHidesendbutton.setChecked(True)
+                self.buttonSend.setVisible(False)
+                self.lineEditSend.setVisible(False)
+                self.lineEdit.setVisible(True)
+            else:
+                self.actionHidesendbutton.setChecked(False)
+                self.buttonSend.setVisible(True)
+                self.lineEditSend.setVisible(True)
+                self.lineEdit.setVisible(False)
+
+        for item in self.cfgPar.get_send_record():
+            if item is not '':
+                self.lineEditSend.addItem(item)
+
     def buildConnect(self):
         self.buttonSend.clicked.connect(self.slot_SendMessage)
+        self.lineEdit.returnPressed.connect(self.slot_SendMessage2)
 
         self.actionNew.triggered.connect(self.slot_NewConnect)
         self.actionOpen.triggered.connect(self.slot_OpenConnect)
@@ -78,6 +115,7 @@ class MyMainWindow(QMainWindow, UI_main.Ui_MainWindow):
 
         self.actionhideright.triggered.connect(self.slot_hide_right)
         self.actionhideSend.triggered.connect(self.slot_hide_send)
+        self.actionHidesendbutton.triggered.connect(self.slot_hide_send_button)
 
         self.ser.SerialSignal.connect(self.slot_Serial_emit)
 
@@ -108,9 +146,47 @@ class MyMainWindow(QMainWindow, UI_main.Ui_MainWindow):
                         send_list.append(num)
                     input_s = bytes(send_list)
                 else:
-                    input_s = (text + '\n').encode('utf-8')
+                    if text.endswith('\n'):
+                        input_s = text.encode('utf-8')
+                    else:
+                        input_s = (text + '\n').encode('utf-8')
                 self.ser.port_send(input_s)
-            self.textEditRecvive.insertPlainText(text + '\n')
+            self.textEditRecvive.append(text)
+            self.textEditRecvive.moveCursor(QTextCursor.End)
+            if self.lineEditSend.itemText(0) == text:
+                pass
+            else:
+                self.lineEditSend.insertItem(0, text)
+
+    def slot_SendMessage2(self):
+        text = self.lineEdit.text().strip()
+        text_list = text.split(' ')
+        if "" != text:
+            if text_list[0] == 'config':
+                if len(text_list) is 4:
+                    self.cfgPar.set_config(text_list[1], text_list[2], text_list[3])
+            else:
+                if self.cfgPar.get_send_format() == 'hex':
+                    send_list = []
+                    while text != '':
+                        try:
+                            num = int(text[0:2], 16)
+                        except ValueError:
+                            QMessageBox.critical(self, 'wrong data', '请输入十六进制数据，以空格分开!')
+                            return None
+                        text = text[2:].strip()
+                        send_list.append(num)
+                    input_s = bytes(send_list)
+                else:
+                    if text.endswith('\n'):
+                        input_s = text.encode('utf-8')
+                    else:
+                        input_s = (text + '\n').encode('utf-8')
+                self.ser.port_send(input_s)
+        else:
+            self.ser.port_send('\n'.encode('utf-8'))
+            self.textEditRecvive.append(text)
+            self.textEditRecvive.moveCursor(QTextCursor.End)
 
     def slot_NewConnect(self):
         self.newConnect.set_PortList(self.ser.Com_List)
@@ -217,17 +293,41 @@ class MyMainWindow(QMainWindow, UI_main.Ui_MainWindow):
     def slot_hide_right(self):
         if self.actionhideright.isChecked():
             self.tabWidget.setVisible(False)
-
+            self.cfgPar.set_config('windowHide', 'right', '1')
         else:
             self.tabWidget.setVisible(True)
+            self.cfgPar.set_config('windowHide', 'right', '0')
 
     def slot_hide_send(self):
         if self.actionhideSend.isChecked():
             self.lineEditSend.setVisible(False)
             self.buttonSend.setVisible(False)
+            self.lineEdit.setVisible(False)
+            self.cfgPar.set_config('windowHide', 'send_line', '1')
+            self.actionHidesendbutton.setChecked(False)
         else:
+            self.cfgPar.set_config('windowHide', 'send_line', '0')
+            if self.actionHidesendbutton.isChecked():
+                self.lineEdit.setVisible(True)
+                self.buttonSend.setVisible(False)
+                self.lineEditSend.setVisible(False)
+            else:
+                self.lineEditSend.setVisible(True)
+                self.buttonSend.setVisible(True)
+                self.lineEdit.setVisible(False)
+
+    def slot_hide_send_button(self):
+        if self.actionHidesendbutton.isChecked():
+            self.cfgPar.set_config('windowHide', 'send_button', '1')
+            self.lineEditSend.setVisible(False)
+            self.buttonSend.setVisible(False)
+            self.lineEdit.setVisible(True)
+            self.actionhideSend.setChecked(False)
+        else:
+            self.cfgPar.set_config('windowHide', 'send_button', '0')
             self.lineEditSend.setVisible(True)
             self.buttonSend.setVisible(True)
+            self.lineEdit.setVisible(False)
 
     def slot_ipc_data_parse(self):
         inputStr = self.lineEditinputIPC.text()

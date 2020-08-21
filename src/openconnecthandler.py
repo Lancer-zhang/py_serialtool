@@ -1,5 +1,6 @@
 import sys
 
+from PyQt5 import QtCore
 from PyQt5.QtCore import pyqtSignal
 
 import openconnect as UI_oc
@@ -12,9 +13,11 @@ class MyOpenConnect(QDialog, UI_oc.Ui_Dialog):
     def __init__(self, parent=None):
         super(MyOpenConnect, self).__init__(parent)
         self.setupUi(self)
+        self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
         self.ports_list = []
         self.current_port = {}
         self.tableWidget.clicked.connect(self.slot_select_port)
+        self.tableWidget.doubleClicked.connect(self.slot_select_and_connect)
         self.pushButtonConnect.clicked.connect(self.slot_connect)
         self.pushButtonClose.clicked.connect(self.destroy)
         self.pushButtonNew.clicked.connect(self.slot_new_connect)
@@ -46,6 +49,14 @@ class MyOpenConnect(QDialog, UI_oc.Ui_Dialog):
         for port in self.ports_list:
             if port['name'] == name:
                 self.current_port = port
+
+    def slot_select_and_connect(self):
+        row = self.tableWidget.currentRow()
+        name = self.tableWidget.item(row, 0).text()
+        for port in self.ports_list:
+            if port['name'] == name:
+                self.current_port = port
+        self.slot_connect()
 
     def slot_connect(self):
         if len(self.current_port) > 0:
