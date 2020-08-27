@@ -25,9 +25,6 @@ class serialProcess(QObject):
         self.data_received = 0
         self.data_send = 0
         self.port_check()
-        # 定时器接收数据
-        # self.timer_rec = QTimer()
-        # self.timer_rec.timeout.connect(self.port_receive)
         self.read_thread = readThread()
 
     def port_check(self):
@@ -52,18 +49,17 @@ class serialProcess(QObject):
                 self.serial.open()
                 if self.serial.isOpen():
                     self.read_thread.start(self.port_receive)
-
+            else:
+                print("can not open")
         except:
             print("can not open " + self.serial.port)
             return None
-        # 打开串口接收定时器，周期为2ms
-
-    # self.timer_rec.start(2)
 
     def port_close(self):
         if self.serial.isOpen():
             #   self.timer_rec.stop()
             self.read_thread.stop()
+            print("close " + self.serial.port)
             #   self.SerialSignal.disconnect()
             # self.timer_send.stop()
             try:

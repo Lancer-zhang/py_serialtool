@@ -1,15 +1,14 @@
 from PyQt5 import QtGui
+from PyQt5.QtCore import QTimer
 from PyQt5.QtGui import QTextCursor
 
 import mainwindow as UI_main
 import newconnecthandler as NC_handler
 import openconnecthandler as OC_handler
-from PyQt5.QtWidgets import QApplication, QMainWindow
+from PyQt5.QtWidgets import QMainWindow
 import serialprocess as mySerial
 from PyQt5.QtWidgets import QMessageBox
 import configutil as Config
-from main import global_data as g_data
-import binascii
 import ipchandler as Ipc
 import chartranshandler
 import filetranshandler
@@ -20,6 +19,26 @@ class MyMainWindow(QMainWindow, UI_main.Ui_MainWindow):
         super(MyMainWindow, self).__init__(parent)
         self.setupUi(self)
         self.ser = mySerial.serialProcess()  # 实例串口类
+
+        # 定时器发送数据auto
+        self.timer_send = QTimer()
+        self.timer_send.timeout.connect(self.send_message_auto)
+
+        # 定时器发送数据porting
+        self.timer_polling = QTimer()
+        self.timer_polling.timeout.connect(self.send_polling_message)
+
+        self.auto_send_cnt = 0
+        self.auto_send_message = ''
+        self.polling_send_cnt = 0
+        self.polling_current_send = 0
+        self.polling_send_message_list = []
+        self.polling_lineEdit = [self.lineEdit_send2, self.lineEditsend3, self.lineEditsend4, self.lineEditsend5,
+                                 self.lineEditsend6, self.lineEditsend7, self.lineEditsend8, self.lineEditsend9,
+                                 self.lineEditsend10, self.lineEditsend11]
+        self.polling_checkbox = [self.radioButton, self.radioButton_2, self.radioButton_3, self.radioButton_4,
+                                 self.radioButton_5, self.radioButton_6, self.radioButton_7, self.radioButton_8,
+                                 self.radioButton_9, self.radioButton_10]
 
         self.cfgPar = Config.configParser()  # 实例配置项类,界面同步部分配置项
         self.configInit()
@@ -32,7 +51,6 @@ class MyMainWindow(QMainWindow, UI_main.Ui_MainWindow):
         self.openConnect = OC_handler.MyOpenConnect()  # 打开的窗口
 
         self.buildConnect()
-
         self.slot_change_transfer()
         self.slot_OpenConnect()
         # TODO
@@ -63,15 +81,20 @@ class MyMainWindow(QMainWindow, UI_main.Ui_MainWindow):
 
     def configInit(self):
         self.actionTime.setChecked(self.cfgPar.is_show_time())
-        g_data.rec_show['time'] = True if self.actionTime.isChecked() else False
 
-        self.actionASCII.setChecked((self.cfgPar.get_show_format() is 'asc'))
-        self.actionHEX.setChecked((self.actionASCII.isChecked() is False))
-        g_data.rec_show['format'] = self.cfgPar.get_show_format()
+        if self.cfgPar.get_show_format() == 'asc':
+            self.actionASCII.setChecked(True)
+            self.actionHEX.setChecked(False)
+        else:
+            self.actionASCII.setChecked(False)
+            self.actionHEX.setChecked(True)
 
-        self.actionSendASCII.setChecked((self.cfgPar.get_send_format() is 'asc'))
-        self.actionSendHEX.setChecked((self.actionSendASCII.isChecked() is False))
-        g_data.send_show['format'] = self.cfgPar.get_send_format()
+        if self.cfgPar.get_send_format() == 'asc':
+            self.actionSendASCII.setChecked(True)
+            self.actionSendHEX.setChecked(False)
+        else:
+            self.actionSendASCII.setChecked(False)
+            self.actionSendHEX.setChecked(True)
 
         self.tabWidget.setVisible(self.cfgPar.get_right_hide() is '0')
         self.actionhideright.setChecked(self.cfgPar.get_right_hide() is '1')
@@ -97,9 +120,19 @@ class MyMainWindow(QMainWindow, UI_main.Ui_MainWindow):
             if item is not '':
                 self.lineEditSend.addItem(item)
 
+        self.lineEditsend1.setText(self.cfgPar.get_auto_send_record())
+        self.spinBoxcnt1.setValue(self.cfgPar.get_auto_send_cnt())
+        self.spinBoxtime1.setValue(self.cfgPar.get_auto_send_time())
+        polling_index = 0
+        for send_text in self.cfgPar.get_porting_send_record():
+            self.polling_lineEdit[polling_index].setText(send_text)
+            polling_index += 1
+
     def buildConnect(self):
         self.buttonSend.clicked.connect(self.slot_SendMessage)
         self.lineEdit.returnPressed.connect(self.slot_SendMessage2)
+        self.buttonSend_2.clicked.connect(self.slot_SendMessage_auto)
+        self.buttonSend_3.clicked.connect(self.slot_send_polling_message)
 
         self.actionNew.triggered.connect(self.slot_NewConnect)
         self.actionOpen.triggered.connect(self.slot_OpenConnect)
@@ -126,8 +159,7 @@ class MyMainWindow(QMainWindow, UI_main.Ui_MainWindow):
         self.buttonstartTrans.clicked.connect(self.slot_start_transfer)  # 文件格式转换
         self.comboBoxfiletrans.currentIndexChanged.connect(self.slot_change_transfer)  # 文件格式转换功能选择
 
-    def slot_SendMessage(self):
-        text = self.lineEditSend.currentText().strip()
+    def parse_sendMessage(self, text):
         text_list = text.split(' ')
         if "" != text:
             if text_list[0] == 'config':
@@ -141,7 +173,7 @@ class MyMainWindow(QMainWindow, UI_main.Ui_MainWindow):
                             num = int(text[0:2], 16)
                         except ValueError:
                             QMessageBox.critical(self, 'wrong data', '请输入十六进制数据，以空格分开!')
-                            return None
+                            return ''
                         text = text[2:].strip()
                         send_list.append(num)
                     input_s = bytes(send_list)
@@ -150,43 +182,111 @@ class MyMainWindow(QMainWindow, UI_main.Ui_MainWindow):
                         input_s = text.encode('utf-8')
                     else:
                         input_s = (text + '\n').encode('utf-8')
-                self.ser.port_send(input_s)
-            self.textEditRecvive.append(text)
-            self.textEditRecvive.moveCursor(QTextCursor.End)
+                return input_s
+        return ''
+
+    def slot_SendMessage(self):
+        text = self.lineEditSend.currentText().strip()
+        input_s = self.parse_sendMessage(text)
+        if input_s is not '':
+            self.ser.port_send(input_s)
             if self.lineEditSend.itemText(0) == text:
                 pass
             else:
                 self.lineEditSend.insertItem(0, text)
+        self.textEditRecvive.moveCursor(QTextCursor.End)
 
     def slot_SendMessage2(self):
         text = self.lineEdit.text().strip()
-        text_list = text.split(' ')
-        if "" != text:
-            if text_list[0] == 'config':
-                if len(text_list) is 4:
-                    self.cfgPar.set_config(text_list[1], text_list[2], text_list[3])
-            else:
-                if self.cfgPar.get_send_format() == 'hex':
-                    send_list = []
-                    while text != '':
-                        try:
-                            num = int(text[0:2], 16)
-                        except ValueError:
-                            QMessageBox.critical(self, 'wrong data', '请输入十六进制数据，以空格分开!')
-                            return None
-                        text = text[2:].strip()
-                        send_list.append(num)
-                    input_s = bytes(send_list)
-                else:
-                    if text.endswith('\n'):
-                        input_s = text.encode('utf-8')
-                    else:
-                        input_s = (text + '\n').encode('utf-8')
-                self.ser.port_send(input_s)
+        input_s = self.parse_sendMessage(text)
+        if input_s is not '':
+            self.ser.port_send(input_s)
         else:
             self.ser.port_send('\n'.encode('utf-8'))
-            self.textEditRecvive.append(text)
+        self.textEditRecvive.moveCursor(QTextCursor.End)
+
+    def slot_SendMessage_auto(self):
+        if self.buttonSend_2.text() == '开始发送':
+            self.buttonSend_2.setText('停止发送')
+            text = self.lineEditsend1.text().strip()
+            self.auto_send_message = self.parse_sendMessage(text)
+            self.auto_send_cnt = self.spinBoxcnt1.value()
+            time = self.spinBoxtime1.value()
+            if self.auto_send_message is not '':
+                self.cfgPar.set_auto_send(text, str(self.auto_send_cnt), str(time))
+            self.lineEditsend1.setEnabled(False)
+            self.spinBoxtime1.setEnabled(False)
+            self.spinBoxcnt1.setEnabled(False)
+            self.timer_send.start(time)
+        elif self.buttonSend_2.text() == '停止发送':
+            if self.timer_send.isActive():
+                self.timer_send.stop()
+            self.lineEditsend1.setEnabled(True)
+            self.spinBoxtime1.setEnabled(True)
+            self.spinBoxcnt1.setEnabled(True)
+            self.buttonSend_2.setText('开始发送')
+
+    def send_message_auto(self):
+        if self.auto_send_cnt > 0:
+            if self.auto_send_message is not '':
+                self.ser.port_send(self.auto_send_message)
+                self.textEditRecvive.moveCursor(QTextCursor.End)
+                self.auto_send_cnt = self.auto_send_cnt - 1
+        elif self.auto_send_cnt == 0:
+            self.slot_SendMessage_auto()
+        elif self.auto_send_cnt == -1:
+            if self.auto_send_message is not '':
+                self.ser.port_send(self.auto_send_message)
+                self.textEditRecvive.moveCursor(QTextCursor.End)
+
+    def slot_send_polling_message(self):
+        if self.buttonSend_3.text() == '开始发送':
+            self.buttonSend_3.setText('停止发送')
+            self.polling_send_message_list.clear()
+            for i in range(0, 10):
+                text = self.polling_lineEdit[i].text().strip()
+                if text != '' and self.polling_checkbox[i].isChecked():
+                    sendMessage = self.parse_sendMessage(text)
+                    if sendMessage != '':
+                        self.polling_send_message_list.append(sendMessage)
+                        print(i, text)
+                        self.cfgPar.set_polling_send_message(str(i+1), text)
+                self.polling_lineEdit[i].setEnabled(False)
+                self.polling_checkbox[i].setEnabled(False)
+            print(self.polling_send_message_list)
+            self.polling_send_cnt = self.spinBoxcnt2.value()
+            time = self.doubleSpinBoxtime.value() * 1000
+            self.cfgPar.set_polling_send_cnt_time(str(self.polling_send_cnt), str(time))
+            self.polling_current_send = 0
+            self.timer_polling.start(time)
+            print(time, self.polling_send_cnt)
+        elif self.buttonSend_3.text() == '停止发送':
+            if self.timer_polling.isActive():
+                self.timer_polling.stop()
+            for i in range(0, 10):
+                self.polling_lineEdit[i].setEnabled(True)
+                self.polling_checkbox[i].setEnabled(True)
+            self.buttonSend_3.setText('开始发送')
+
+    def send_polling_message(self):
+        if self.polling_send_cnt > 0:
+            text = self.polling_send_message_list[self.polling_current_send]
+            self.ser.port_send(text)
             self.textEditRecvive.moveCursor(QTextCursor.End)
+            self.polling_current_send = self.polling_current_send + 1
+            if self.polling_current_send == len(self.polling_send_message_list):
+                self.polling_current_send = 0
+                self.polling_send_cnt = self.polling_send_cnt - 1
+            print(self.polling_current_send)
+        elif self.polling_send_cnt == 0:
+            self.slot_send_polling_message()
+        elif self.polling_send_cnt == -1:
+            text = self.polling_send_message_list.index(self.polling_current_send)
+            self.ser.port_send(text)
+            self.textEditRecvive.moveCursor(QTextCursor.End)
+            self.polling_current_send = self.polling_current_send + 1
+            if self.polling_current_send == self.polling_send_message_list.count():
+                self.polling_current_send = 0
 
     def slot_NewConnect(self):
         self.newConnect.set_PortList(self.ser.Com_List)
@@ -234,10 +334,7 @@ class MyMainWindow(QMainWindow, UI_main.Ui_MainWindow):
         if flag == 'receive':  # rec
             # hex显示
             if self.cfgPar.get_show_format() == 'hex':
-                bytes_16 = binascii.b2a_hex(data)
-                out_s = ''
-                for i in range(0, len(data)):
-                    out_s = out_s + '{:02X}'.format(bytes_16[i]) + ' '
+                out_s = chartranshandler.ascii2hex(data)
                 self.textEditRecvive.insertPlainText(out_s)
             else:
                 self.textEditRecvive.insertPlainText(data)
@@ -247,7 +344,6 @@ class MyMainWindow(QMainWindow, UI_main.Ui_MainWindow):
 
     def slot_show_time(self):
         value = True if self.actionTime.isChecked() else False
-        g_data.rec_show['time'] = value
         self.cfgPar.set_config('showCfg', 'show_time', str(value))
 
     def slot_show_asc(self):
@@ -257,7 +353,6 @@ class MyMainWindow(QMainWindow, UI_main.Ui_MainWindow):
         else:
             value = 'hex'
             self.actionHEX.setChecked(True)
-        g_data.rec_show['format'] = value
         self.cfgPar.set_config('showCfg', 'show_format', value)
 
     def slot_send_asc(self):
@@ -267,7 +362,6 @@ class MyMainWindow(QMainWindow, UI_main.Ui_MainWindow):
         else:
             value = 'hex'
             self.actionSendHEX.setChecked(True)
-        g_data.send_show['format'] = value
         self.cfgPar.set_config('sendCfg', 'send_format', value)
 
     def slot_show_hex(self):
@@ -277,7 +371,6 @@ class MyMainWindow(QMainWindow, UI_main.Ui_MainWindow):
         else:
             value = 'asc'
             self.actionASCII.setChecked(True)
-        g_data.rec_show['format'] = value
         self.cfgPar.set_config('showCfg', 'show_format', value)
 
     def slot_send_hex(self):
@@ -287,7 +380,6 @@ class MyMainWindow(QMainWindow, UI_main.Ui_MainWindow):
         else:
             value = 'asc'
             self.actionSendASCII.setChecked(True)
-        g_data.send_show['format'] = value
         self.cfgPar.set_config('sendCfg', 'send_format', value)
 
     def slot_hide_right(self):
@@ -330,6 +422,7 @@ class MyMainWindow(QMainWindow, UI_main.Ui_MainWindow):
             self.lineEdit.setVisible(False)
 
     def slot_ipc_data_parse(self):
+        outStr = ''
         inputStr = self.lineEditinputIPC.text()
         inputXml = self.lineEditinputIPC_doc.text()
         self.textEditoutputIPC.clear()
@@ -340,6 +433,7 @@ class MyMainWindow(QMainWindow, UI_main.Ui_MainWindow):
         self.textEditoutputIPC.insertPlainText(outStr)
 
     def slot_hex_to_ascii(self):
+        outStr = ''
         inputStr = self.textEdit_beforetrans.toPlainText()
         self.textEdit_aftertrans.clear()
         if inputStr is not '':
@@ -347,6 +441,7 @@ class MyMainWindow(QMainWindow, UI_main.Ui_MainWindow):
         self.textEdit_aftertrans.insertPlainText(outStr)
 
     def slot_ascii_to_hex(self):
+        outStr = ''
         inputStr = self.textEdit_beforetrans.toPlainText()
         self.textEdit_aftertrans.clear()
         if inputStr is not '':
@@ -356,11 +451,13 @@ class MyMainWindow(QMainWindow, UI_main.Ui_MainWindow):
     def slot_start_transfer(self):
         index = self.comboBoxfiletrans.currentIndex()
         if index is 0:
-            filetranshandler.hexToBin(self.lineEdit_sourse.text(), self.lineEdit_start1.text(), self.lineEdit_end1.text(),
+            filetranshandler.hexToBin(self.lineEdit_sourse.text(), self.lineEdit_start1.text(),
+                                      self.lineEdit_end1.text(),
                                       self.lineEdit_obj.text(), self.lineEdit_start3.text(), self.lineEdit_end3.text(),
                                       self.lineEdit_pad.text())
         elif index is 1:
-            filetranshandler.binToHex(self.lineEdit_sourse.text(), self.lineEdit_obj.text(), self.lineEdit_start1.text())
+            filetranshandler.binToHex(self.lineEdit_sourse.text(), self.lineEdit_obj.text(),
+                                      self.lineEdit_start1.text())
         elif index is 2:
             filetranshandler.binToTxt(self.lineEdit_sourse.text(), self.lineEdit_obj.text())
         elif index is 3:

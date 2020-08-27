@@ -10,11 +10,6 @@ from PyQt5.QtWidgets import QApplication, QMainWindow
 import mainwindowhandler as UI
 
 
-class global_data:
-    rec_show = {'time': True, 'format': 'asc'}
-    send_show = {'format': 'asc'}
-
-
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     MainWindow = UI.MyMainWindow()
