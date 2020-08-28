@@ -1,7 +1,6 @@
 from PyQt5 import QtGui
 from PyQt5.QtCore import QTimer
 from PyQt5.QtGui import QTextCursor
-
 import mainwindow as UI_main
 import newconnecthandler as NC_handler
 import openconnecthandler as OC_handler
@@ -18,6 +17,12 @@ class MyMainWindow(QMainWindow, UI_main.Ui_MainWindow):
     def __init__(self, parent=None):
         super(MyMainWindow, self).__init__(parent)
         self.setupUi(self)
+        self.toolBar.addAction(self.actionNew)
+        self.toolBar.addAction(self.actionOpen)
+        self.toolBar.addAction(self.actionRe_Connect)
+        self.toolBar.addAction(self.actionDisconnect)
+        self.toolBar.addAction(self.menuShow.menuAction())
+
         self.ser = mySerial.serialProcess()  # 实例串口类
 
         # 定时器发送数据auto
@@ -36,9 +41,10 @@ class MyMainWindow(QMainWindow, UI_main.Ui_MainWindow):
         self.polling_lineEdit = [self.lineEdit_send2, self.lineEditsend3, self.lineEditsend4, self.lineEditsend5,
                                  self.lineEditsend6, self.lineEditsend7, self.lineEditsend8, self.lineEditsend9,
                                  self.lineEditsend10, self.lineEditsend11]
-        self.polling_checkbox = [self.radioButton, self.radioButton_2, self.radioButton_3, self.radioButton_4,
-                                 self.radioButton_5, self.radioButton_6, self.radioButton_7, self.radioButton_8,
-                                 self.radioButton_9, self.radioButton_10]
+        self.polling_checkbox = [self.checkBoxpolling1, self.checkBoxpolling2, self.checkBoxpolling3,
+                                 self.checkBoxpolling4, self.checkBoxpolling5, self.checkBoxpolling6,
+                                 self.checkBoxpolling7, self.checkBoxpolling8,
+                                 self.checkBoxpolling9, self.checkBoxpolling10]
 
         self.cfgPar = Config.configParser()  # 实例配置项类,界面同步部分配置项
         self.configInit()
@@ -54,8 +60,6 @@ class MyMainWindow(QMainWindow, UI_main.Ui_MainWindow):
         self.slot_change_transfer()
         self.slot_OpenConnect()
         # TODO
-        self.lineEditinputIPC_file.setEnabled(False)
-
         self.lineEdit_source2.setEnabled(False)
         self.lineEdit_start2.setEnabled(False)
         self.lineEdit_end2.setEnabled(False)
@@ -134,6 +138,8 @@ class MyMainWindow(QMainWindow, UI_main.Ui_MainWindow):
         self.buttonSend_2.clicked.connect(self.slot_SendMessage_auto)
         self.buttonSend_3.clicked.connect(self.slot_send_polling_message)
 
+        self.buttonSend_CtrlC.clicked.connect(self.slot_send_CtrlC)
+
         self.actionNew.triggered.connect(self.slot_NewConnect)
         self.actionOpen.triggered.connect(self.slot_OpenConnect)
 
@@ -185,6 +191,12 @@ class MyMainWindow(QMainWindow, UI_main.Ui_MainWindow):
                 return input_s
         return ''
 
+    def slot_send_CtrlC(self):
+        send_list = [int('3', 16)]
+        input_s = bytes(send_list)
+        print("send ctrl c")
+        self.ser.port_send(input_s)
+
     def slot_SendMessage(self):
         text = self.lineEditSend.currentText().strip()
         input_s = self.parse_sendMessage(text)
@@ -204,6 +216,7 @@ class MyMainWindow(QMainWindow, UI_main.Ui_MainWindow):
         else:
             self.ser.port_send('\n'.encode('utf-8'))
         self.textEditRecvive.moveCursor(QTextCursor.End)
+        self.lineEdit.selectAll()
 
     def slot_SendMessage_auto(self):
         if self.buttonSend_2.text() == '开始发送':
@@ -270,14 +283,18 @@ class MyMainWindow(QMainWindow, UI_main.Ui_MainWindow):
 
     def send_polling_message(self):
         if self.polling_send_cnt > 0:
-            text = self.polling_send_message_list[self.polling_current_send]
-            self.ser.port_send(text)
-            self.textEditRecvive.moveCursor(QTextCursor.End)
-            self.polling_current_send = self.polling_current_send + 1
-            if self.polling_current_send == len(self.polling_send_message_list):
-                self.polling_current_send = 0
-                self.polling_send_cnt = self.polling_send_cnt - 1
-            print(self.polling_current_send)
+            message_list_len = len(self.polling_send_message_list)
+            if message_list_len > 0:
+                text = self.polling_send_message_list[self.polling_current_send]
+                self.ser.port_send(text)
+                self.textEditRecvive.moveCursor(QTextCursor.End)
+                self.polling_current_send = self.polling_current_send + 1
+                if self.polling_current_send == message_list_len:
+                    self.polling_current_send = 0
+                    self.polling_send_cnt = self.polling_send_cnt - 1
+                print(self.polling_current_send)
+            else:
+                print("send_polling_message list len is 0")
         elif self.polling_send_cnt == 0:
             self.slot_send_polling_message()
         elif self.polling_send_cnt == -1:

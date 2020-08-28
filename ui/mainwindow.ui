@@ -63,18 +63,32 @@
         <height>16777215</height>
        </size>
       </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
       <property name="cursor" stdset="0">
        <cursorShape>IBeamCursor</cursorShape>
+      </property>
+      <property name="focusPolicy">
+       <enum>Qt::StrongFocus</enum>
       </property>
       <property name="styleSheet">
        <string notr="true">background-color: balck;
 color: white;</string>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Sunken</enum>
       </property>
       <property name="cursorWidth">
        <number>2</number>
       </property>
       <property name="textInteractionFlags">
        <set>Qt::TextBrowserInteraction</set>
+      </property>
+      <property name="openExternalLinks">
+       <bool>false</bool>
       </property>
      </widget>
     </item>
@@ -102,7 +116,7 @@ color: white;</string>
       </property>
       <property name="maximumSize">
        <size>
-        <width>500</width>
+        <width>16777215</width>
         <height>16777215</height>
        </size>
       </property>
@@ -145,9 +159,9 @@ color: white;</string>
        <widget class="QLineEdit" name="lineEditsend1">
         <property name="geometry">
          <rect>
-          <x>0</x>
+          <x>10</x>
           <y>20</y>
-          <width>561</width>
+          <width>551</width>
           <height>21</height>
          </rect>
         </property>
@@ -155,7 +169,7 @@ color: white;</string>
        <widget class="QLineEdit" name="lineEdit_send2">
         <property name="geometry">
          <rect>
-          <x>0</x>
+          <x>10</x>
           <y>120</y>
           <width>521</width>
           <height>21</height>
@@ -165,7 +179,7 @@ color: white;</string>
        <widget class="QLineEdit" name="lineEditsend3">
         <property name="geometry">
          <rect>
-          <x>0</x>
+          <x>10</x>
           <y>150</y>
           <width>521</width>
           <height>21</height>
@@ -175,7 +189,7 @@ color: white;</string>
        <widget class="QLineEdit" name="lineEditsend4">
         <property name="geometry">
          <rect>
-          <x>0</x>
+          <x>10</x>
           <y>180</y>
           <width>521</width>
           <height>21</height>
@@ -185,7 +199,7 @@ color: white;</string>
        <widget class="QLineEdit" name="lineEditsend5">
         <property name="geometry">
          <rect>
-          <x>0</x>
+          <x>10</x>
           <y>210</y>
           <width>521</width>
           <height>21</height>
@@ -195,7 +209,7 @@ color: white;</string>
        <widget class="QLineEdit" name="lineEditsend6">
         <property name="geometry">
          <rect>
-          <x>0</x>
+          <x>10</x>
           <y>240</y>
           <width>521</width>
           <height>21</height>
@@ -205,7 +219,7 @@ color: white;</string>
        <widget class="QLineEdit" name="lineEditsend7">
         <property name="geometry">
          <rect>
-          <x>0</x>
+          <x>10</x>
           <y>270</y>
           <width>521</width>
           <height>21</height>
@@ -215,7 +229,7 @@ color: white;</string>
        <widget class="QLineEdit" name="lineEditsend8">
         <property name="geometry">
          <rect>
-          <x>0</x>
+          <x>10</x>
           <y>300</y>
           <width>521</width>
           <height>21</height>
@@ -225,7 +239,7 @@ color: white;</string>
        <widget class="QLineEdit" name="lineEditsend9">
         <property name="geometry">
          <rect>
-          <x>0</x>
+          <x>10</x>
           <y>330</y>
           <width>521</width>
           <height>21</height>
@@ -235,7 +249,7 @@ color: white;</string>
        <widget class="QLineEdit" name="lineEditsend10">
         <property name="geometry">
          <rect>
-          <x>0</x>
+          <x>10</x>
           <y>360</y>
           <width>521</width>
           <height>21</height>
@@ -270,7 +284,7 @@ color: white;</string>
        <widget class="QLineEdit" name="lineEditsend11">
         <property name="geometry">
          <rect>
-          <x>0</x>
+          <x>10</x>
           <y>390</y>
           <width>521</width>
           <height>21</height>
@@ -338,7 +352,7 @@ color: white;</string>
          </size>
         </property>
         <property name="text">
-         <string>发送</string>
+         <string>开始发送</string>
         </property>
        </widget>
        <widget class="QSpinBox" name="spinBoxcnt1">
@@ -463,7 +477,7 @@ color: white;</string>
          <string>次数</string>
         </property>
        </widget>
-       <widget class="QRadioButton" name="radioButton">
+       <widget class="QCheckBox" name="checkBoxpolling1">
         <property name="geometry">
          <rect>
           <x>540</x>
@@ -476,7 +490,7 @@ color: white;</string>
          <string/>
         </property>
        </widget>
-       <widget class="QRadioButton" name="radioButton_2">
+       <widget class="QCheckBox" name="checkBoxpolling2">
         <property name="geometry">
          <rect>
           <x>540</x>
@@ -489,7 +503,7 @@ color: white;</string>
          <string/>
         </property>
        </widget>
-       <widget class="QRadioButton" name="radioButton_3">
+       <widget class="QCheckBox" name="checkBoxpolling3">
         <property name="geometry">
          <rect>
           <x>540</x>
@@ -502,7 +516,7 @@ color: white;</string>
          <string/>
         </property>
        </widget>
-       <widget class="QRadioButton" name="radioButton_4">
+       <widget class="QCheckBox" name="checkBoxpolling4">
         <property name="geometry">
          <rect>
           <x>540</x>
@@ -515,7 +529,7 @@ color: white;</string>
          <string/>
         </property>
        </widget>
-       <widget class="QRadioButton" name="radioButton_5">
+       <widget class="QCheckBox" name="checkBoxpolling8">
         <property name="geometry">
          <rect>
           <x>540</x>
@@ -528,7 +542,7 @@ color: white;</string>
          <string/>
         </property>
        </widget>
-       <widget class="QRadioButton" name="radioButton_6">
+       <widget class="QCheckBox" name="checkBoxpolling5">
         <property name="geometry">
          <rect>
           <x>540</x>
@@ -541,7 +555,7 @@ color: white;</string>
          <string/>
         </property>
        </widget>
-       <widget class="QRadioButton" name="radioButton_7">
+       <widget class="QCheckBox" name="checkBoxpolling6">
         <property name="geometry">
          <rect>
           <x>540</x>
@@ -554,7 +568,7 @@ color: white;</string>
          <string/>
         </property>
        </widget>
-       <widget class="QRadioButton" name="radioButton_8">
+       <widget class="QCheckBox" name="checkBoxpolling7">
         <property name="geometry">
          <rect>
           <x>540</x>
@@ -567,7 +581,7 @@ color: white;</string>
          <string/>
         </property>
        </widget>
-       <widget class="QRadioButton" name="radioButton_9">
+       <widget class="QCheckBox" name="checkBoxpolling10">
         <property name="geometry">
          <rect>
           <x>540</x>
@@ -580,7 +594,7 @@ color: white;</string>
          <string/>
         </property>
        </widget>
-       <widget class="QRadioButton" name="radioButton_10">
+       <widget class="QCheckBox" name="checkBoxpolling9">
         <property name="geometry">
          <rect>
           <x>540</x>
@@ -593,22 +607,173 @@ color: white;</string>
          <string/>
         </property>
        </widget>
+       <widget class="Line" name="line_2">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>440</y>
+          <width>561</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="buttonSend_CtrlC">
+        <property name="geometry">
+         <rect>
+          <x>80</x>
+          <y>460</y>
+          <width>81</width>
+          <height>21</height>
+         </rect>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>150</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Ctrl+C</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_24">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>460</y>
+          <width>71</width>
+          <height>21</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>快捷键发送</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="buttonSend_CtrlZ">
+        <property name="geometry">
+         <rect>
+          <x>180</x>
+          <y>460</y>
+          <width>81</width>
+          <height>21</height>
+         </rect>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>150</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Ctrl+Z</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="buttonSend_CtrlX">
+        <property name="geometry">
+         <rect>
+          <x>280</x>
+          <y>460</y>
+          <width>81</width>
+          <height>21</height>
+         </rect>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>150</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Ctrl+X</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="buttonSend_Tab">
+        <property name="geometry">
+         <rect>
+          <x>380</x>
+          <y>460</y>
+          <width>81</width>
+          <height>21</height>
+         </rect>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>150</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Tab</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="buttonSend_Enter">
+        <property name="geometry">
+         <rect>
+          <x>480</x>
+          <y>460</y>
+          <width>81</width>
+          <height>21</height>
+         </rect>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>150</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Enter</string>
+        </property>
+       </widget>
       </widget>
       <widget class="QWidget" name="tab_parse">
        <attribute name="title">
-        <string>数据解析</string>
+        <string>IPC解析</string>
        </attribute>
        <widget class="QGroupBox" name="groupBox">
         <property name="geometry">
          <rect>
           <x>0</x>
-          <y>10</y>
+          <y>70</y>
           <width>561</width>
-          <height>241</height>
+          <height>201</height>
          </rect>
         </property>
         <property name="title">
-         <string>IPC解析</string>
+         <string>数据解析</string>
         </property>
         <widget class="QLabel" name="label">
          <property name="geometry">
@@ -656,57 +821,11 @@ color: white;</string>
           </rect>
          </property>
         </widget>
-        <widget class="QLabel" name="label_5">
-         <property name="geometry">
-          <rect>
-           <x>10</x>
-           <y>170</y>
-           <width>71</width>
-           <height>21</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>OS_Log文件</string>
-         </property>
-        </widget>
-        <widget class="QLineEdit" name="lineEditinputIPC_file">
-         <property name="geometry">
-          <rect>
-           <x>80</x>
-           <y>170</y>
-           <width>471</width>
-           <height>21</height>
-          </rect>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label_15">
-         <property name="geometry">
-          <rect>
-           <x>10</x>
-           <y>200</y>
-           <width>71</width>
-           <height>21</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>IPC协议文件</string>
-         </property>
-        </widget>
-        <widget class="QLineEdit" name="lineEditinputIPC_doc">
-         <property name="geometry">
-          <rect>
-           <x>80</x>
-           <y>200</y>
-           <width>361</width>
-           <height>21</height>
-          </rect>
-         </property>
-        </widget>
         <widget class="QPushButton" name="button_ipcparse">
          <property name="geometry">
           <rect>
            <x>450</x>
-           <y>200</y>
+           <y>170</y>
            <width>100</width>
            <height>23</height>
           </rect>
@@ -728,169 +847,59 @@ color: white;</string>
          </property>
         </widget>
        </widget>
-       <widget class="QGroupBox" name="groupBox_2">
+       <widget class="QLineEdit" name="lineEditinputIPC_doc">
+        <property name="geometry">
+         <rect>
+          <x>80</x>
+          <y>10</y>
+          <width>441</width>
+          <height>21</height>
+         </rect>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_15">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>10</y>
+          <width>71</width>
+          <height>21</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>IPC协议文件</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_23">
+        <property name="geometry">
+         <rect>
+          <x>530</x>
+          <y>10</y>
+          <width>31</width>
+          <height>21</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>.xml</string>
+        </property>
+       </widget>
+       <widget class="QGroupBox" name="groupBox_3">
         <property name="geometry">
          <rect>
           <x>0</x>
-          <y>260</y>
+          <y>280</y>
           <width>561</width>
-          <height>311</height>
+          <height>171</height>
          </rect>
         </property>
         <property name="title">
-         <string>编码解析</string>
+         <string>文件解析</string>
         </property>
-        <widget class="QLabel" name="label_3">
-         <property name="geometry">
-          <rect>
-           <x>10</x>
-           <y>20</y>
-           <width>71</width>
-           <height>21</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>转换前数据</string>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label_4">
-         <property name="geometry">
-          <rect>
-           <x>10</x>
-           <y>150</y>
-           <width>71</width>
-           <height>21</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>转换后数据</string>
-         </property>
-        </widget>
-        <widget class="QTextEdit" name="textEdit_beforetrans">
-         <property name="geometry">
-          <rect>
-           <x>80</x>
-           <y>20</y>
-           <width>471</width>
-           <height>121</height>
-          </rect>
-         </property>
-        </widget>
-        <widget class="QTextEdit" name="textEdit_aftertrans">
-         <property name="geometry">
-          <rect>
-           <x>80</x>
-           <y>150</y>
-           <width>471</width>
-           <height>121</height>
-          </rect>
-         </property>
-        </widget>
-        <widget class="QPushButton" name="button_transspace">
-         <property name="geometry">
-          <rect>
-           <x>10</x>
-           <y>280</y>
-           <width>100</width>
-           <height>23</height>
-          </rect>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>100</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>100</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>空格转换</string>
-         </property>
-        </widget>
-        <widget class="QPushButton" name="button_transtight">
-         <property name="geometry">
-          <rect>
-           <x>120</x>
-           <y>280</y>
-           <width>100</width>
-           <height>23</height>
-          </rect>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>100</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>100</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>紧凑转换</string>
-         </property>
-        </widget>
-        <widget class="QPushButton" name="button_transbuf">
-         <property name="geometry">
-          <rect>
-           <x>230</x>
-           <y>280</y>
-           <width>100</width>
-           <height>23</height>
-          </rect>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>100</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>100</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>数组转换</string>
-         </property>
-        </widget>
-        <widget class="QPushButton" name="button_transHEX">
-         <property name="geometry">
-          <rect>
-           <x>340</x>
-           <y>280</y>
-           <width>100</width>
-           <height>23</height>
-          </rect>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>100</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>100</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>字符 -&gt; HXE</string>
-         </property>
-        </widget>
-        <widget class="QPushButton" name="button_transchar">
+        <widget class="QPushButton" name="button_ipcparse_2">
          <property name="geometry">
           <rect>
            <x>450</x>
-           <y>280</y>
+           <y>140</y>
            <width>100</width>
            <height>23</height>
           </rect>
@@ -908,9 +917,146 @@ color: white;</string>
           </size>
          </property>
          <property name="text">
-          <string>HEX -&gt; 字符</string>
+          <string>开始解析</string>
          </property>
         </widget>
+        <widget class="QLineEdit" name="lineEditinputIPC_file_src">
+         <property name="geometry">
+          <rect>
+           <x>80</x>
+           <y>50</y>
+           <width>471</width>
+           <height>21</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="lineEditinputIPC_file_obj">
+         <property name="geometry">
+          <rect>
+           <x>80</x>
+           <y>110</y>
+           <width>471</width>
+           <height>21</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_25">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>110</y>
+           <width>71</width>
+           <height>21</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>生成路径</string>
+         </property>
+        </widget>
+        <widget class="QCheckBox" name="checkBox_replace_IPC">
+         <property name="geometry">
+          <rect>
+           <x>80</x>
+           <y>80</y>
+           <width>121</width>
+           <height>21</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>替换IPC原始数据</string>
+         </property>
+        </widget>
+        <widget class="QCheckBox" name="checkBox_Detail_IPC">
+         <property name="geometry">
+          <rect>
+           <x>210</x>
+           <y>80</y>
+           <width>121</width>
+           <height>21</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>IPC数据详细内容</string>
+         </property>
+        </widget>
+        <widget class="QCheckBox" name="checkBox_Reserve_IPC">
+         <property name="geometry">
+          <rect>
+           <x>340</x>
+           <y>80</y>
+           <width>111</width>
+           <height>21</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>保留其他Log内容</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_27">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>20</y>
+           <width>151</width>
+           <height>21</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Log文件或文件夹路径</string>
+         </property>
+        </widget>
+        <widget class="QRadioButton" name="radioButton_MCULOG">
+         <property name="geometry">
+          <rect>
+           <x>370</x>
+           <y>20</y>
+           <width>89</width>
+           <height>21</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>MCU LOG</string>
+         </property>
+        </widget>
+        <widget class="QRadioButton" name="radioButton_SOCLOG">
+         <property name="geometry">
+          <rect>
+           <x>460</x>
+           <y>20</y>
+           <width>89</width>
+           <height>21</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>SOC LOG</string>
+         </property>
+        </widget>
+       </widget>
+       <widget class="QLabel" name="label_26">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>40</y>
+          <width>181</width>
+          <height>21</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>IPC协议文件中的MCU Log 描述：</string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="lineEditinputIPC_doc_2">
+        <property name="geometry">
+         <rect>
+          <x>190</x>
+          <y>40</y>
+          <width>331</width>
+          <height>21</height>
+         </rect>
+        </property>
        </widget>
       </widget>
       <widget class="QWidget" name="tab_plot">
@@ -951,7 +1097,7 @@ color: white;</string>
           <x>0</x>
           <y>10</y>
           <width>561</width>
-          <height>271</height>
+          <height>261</height>
          </rect>
         </property>
         <property name="title">
@@ -961,7 +1107,7 @@ color: white;</string>
          <property name="geometry">
           <rect>
            <x>80</x>
-           <y>30</y>
+           <y>20</y>
            <width>471</width>
            <height>21</height>
           </rect>
@@ -971,7 +1117,7 @@ color: white;</string>
          <property name="geometry">
           <rect>
            <x>10</x>
-           <y>30</y>
+           <y>20</y>
            <width>71</width>
            <height>21</height>
           </rect>
@@ -984,7 +1130,7 @@ color: white;</string>
          <property name="geometry">
           <rect>
            <x>80</x>
-           <y>150</y>
+           <y>140</y>
            <width>471</width>
            <height>21</height>
           </rect>
@@ -994,7 +1140,7 @@ color: white;</string>
          <property name="geometry">
           <rect>
            <x>10</x>
-           <y>150</y>
+           <y>140</y>
            <width>71</width>
            <height>21</height>
           </rect>
@@ -1007,7 +1153,7 @@ color: white;</string>
          <property name="geometry">
           <rect>
            <x>80</x>
-           <y>60</y>
+           <y>50</y>
            <width>91</width>
            <height>21</height>
           </rect>
@@ -1020,7 +1166,7 @@ color: white;</string>
          <property name="geometry">
           <rect>
            <x>340</x>
-           <y>60</y>
+           <y>50</y>
            <width>91</width>
            <height>21</height>
           </rect>
@@ -1033,7 +1179,7 @@ color: white;</string>
          <property name="geometry">
           <rect>
            <x>190</x>
-           <y>60</y>
+           <y>50</y>
            <width>101</width>
            <height>21</height>
           </rect>
@@ -1043,7 +1189,7 @@ color: white;</string>
          <property name="geometry">
           <rect>
            <x>450</x>
-           <y>60</y>
+           <y>50</y>
            <width>101</width>
            <height>21</height>
           </rect>
@@ -1053,7 +1199,7 @@ color: white;</string>
          <property name="geometry">
           <rect>
            <x>80</x>
-           <y>180</y>
+           <y>170</y>
            <width>91</width>
            <height>21</height>
           </rect>
@@ -1066,7 +1212,7 @@ color: white;</string>
          <property name="geometry">
           <rect>
            <x>340</x>
-           <y>180</y>
+           <y>170</y>
            <width>91</width>
            <height>21</height>
           </rect>
@@ -1079,7 +1225,7 @@ color: white;</string>
          <property name="geometry">
           <rect>
            <x>450</x>
-           <y>180</y>
+           <y>170</y>
            <width>101</width>
            <height>21</height>
           </rect>
@@ -1089,7 +1235,7 @@ color: white;</string>
          <property name="geometry">
           <rect>
            <x>190</x>
-           <y>180</y>
+           <y>170</y>
            <width>101</width>
            <height>21</height>
           </rect>
@@ -1099,7 +1245,7 @@ color: white;</string>
          <property name="geometry">
           <rect>
            <x>80</x>
-           <y>210</y>
+           <y>200</y>
            <width>91</width>
            <height>21</height>
           </rect>
@@ -1112,7 +1258,7 @@ color: white;</string>
          <property name="geometry">
           <rect>
            <x>190</x>
-           <y>210</y>
+           <y>200</y>
            <width>101</width>
            <height>21</height>
           </rect>
@@ -1122,7 +1268,7 @@ color: white;</string>
          <property name="geometry">
           <rect>
            <x>80</x>
-           <y>120</y>
+           <y>110</y>
            <width>91</width>
            <height>21</height>
           </rect>
@@ -1135,7 +1281,7 @@ color: white;</string>
          <property name="geometry">
           <rect>
            <x>80</x>
-           <y>90</y>
+           <y>80</y>
            <width>471</width>
            <height>21</height>
           </rect>
@@ -1148,7 +1294,7 @@ color: white;</string>
          <property name="geometry">
           <rect>
            <x>340</x>
-           <y>120</y>
+           <y>110</y>
            <width>91</width>
            <height>21</height>
           </rect>
@@ -1161,7 +1307,7 @@ color: white;</string>
          <property name="geometry">
           <rect>
            <x>450</x>
-           <y>120</y>
+           <y>110</y>
            <width>101</width>
            <height>21</height>
           </rect>
@@ -1174,7 +1320,7 @@ color: white;</string>
          <property name="geometry">
           <rect>
            <x>10</x>
-           <y>90</y>
+           <y>80</y>
            <width>71</width>
            <height>21</height>
           </rect>
@@ -1187,7 +1333,7 @@ color: white;</string>
          <property name="geometry">
           <rect>
            <x>190</x>
-           <y>120</y>
+           <y>110</y>
            <width>101</width>
            <height>21</height>
           </rect>
@@ -1200,7 +1346,7 @@ color: white;</string>
          <property name="geometry">
           <rect>
            <x>450</x>
-           <y>240</y>
+           <y>230</y>
            <width>100</width>
            <height>23</height>
           </rect>
@@ -1224,9 +1370,9 @@ color: white;</string>
         <widget class="QComboBox" name="comboBoxfiletrans">
          <property name="geometry">
           <rect>
-           <x>80</x>
-           <y>240</y>
-           <width>211</width>
+           <x>450</x>
+           <y>200</y>
+           <width>101</width>
            <height>22</height>
           </rect>
          </property>
@@ -1254,14 +1400,198 @@ color: white;</string>
         <widget class="QLabel" name="label_16">
          <property name="geometry">
           <rect>
-           <x>10</x>
-           <y>240</y>
+           <x>340</x>
+           <y>200</y>
            <width>71</width>
            <height>21</height>
           </rect>
          </property>
          <property name="text">
           <string>功能选择</string>
+         </property>
+        </widget>
+       </widget>
+       <widget class="QGroupBox" name="groupBox_2">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>280</y>
+          <width>561</width>
+          <height>291</height>
+         </rect>
+        </property>
+        <property name="title">
+         <string>编码解析</string>
+        </property>
+        <widget class="QLabel" name="label_3">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>20</y>
+           <width>71</width>
+           <height>21</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>转换前数据</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_4">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>140</y>
+           <width>71</width>
+           <height>21</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>转换后数据</string>
+         </property>
+        </widget>
+        <widget class="QTextEdit" name="textEdit_beforetrans">
+         <property name="geometry">
+          <rect>
+           <x>80</x>
+           <y>20</y>
+           <width>471</width>
+           <height>111</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QTextEdit" name="textEdit_aftertrans">
+         <property name="geometry">
+          <rect>
+           <x>80</x>
+           <y>140</y>
+           <width>471</width>
+           <height>111</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="button_transspace">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>260</y>
+           <width>100</width>
+           <height>23</height>
+          </rect>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>100</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>100</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>空格转换</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="button_transtight">
+         <property name="geometry">
+          <rect>
+           <x>120</x>
+           <y>260</y>
+           <width>100</width>
+           <height>23</height>
+          </rect>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>100</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>100</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>紧凑转换</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="button_transbuf">
+         <property name="geometry">
+          <rect>
+           <x>230</x>
+           <y>260</y>
+           <width>100</width>
+           <height>23</height>
+          </rect>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>100</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>100</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>数组转换</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="button_transHEX">
+         <property name="geometry">
+          <rect>
+           <x>340</x>
+           <y>260</y>
+           <width>100</width>
+           <height>23</height>
+          </rect>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>100</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>100</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>字符 -&gt; HXE</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="button_transchar">
+         <property name="geometry">
+          <rect>
+           <x>450</x>
+           <y>260</y>
+           <width>100</width>
+           <height>23</height>
+          </rect>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>100</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>100</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>HEX -&gt; 字符</string>
          </property>
         </widget>
        </widget>
