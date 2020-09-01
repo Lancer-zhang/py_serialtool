@@ -150,7 +150,7 @@ color: white;</string>
        </size>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tab_serial">
        <attribute name="title">
@@ -767,7 +767,7 @@ color: white;</string>
         <property name="geometry">
          <rect>
           <x>0</x>
-          <y>70</y>
+          <y>100</y>
           <width>561</width>
           <height>201</height>
          </rect>
@@ -887,9 +887,9 @@ color: white;</string>
         <property name="geometry">
          <rect>
           <x>0</x>
-          <y>280</y>
+          <y>310</y>
           <width>561</width>
-          <height>171</height>
+          <height>111</height>
          </rect>
         </property>
         <property name="title">
@@ -899,7 +899,7 @@ color: white;</string>
          <property name="geometry">
           <rect>
            <x>450</x>
-           <y>140</y>
+           <y>80</y>
            <width>100</width>
            <height>23</height>
           </rect>
@@ -924,17 +924,20 @@ color: white;</string>
          <property name="geometry">
           <rect>
            <x>80</x>
-           <y>50</y>
+           <y>20</y>
            <width>471</width>
            <height>21</height>
           </rect>
+         </property>
+         <property name="dragEnabled">
+          <bool>true</bool>
          </property>
         </widget>
         <widget class="QLineEdit" name="lineEditinputIPC_file_obj">
          <property name="geometry">
           <rect>
            <x>80</x>
-           <y>110</y>
+           <y>50</y>
            <width>471</width>
            <height>21</height>
           </rect>
@@ -942,12 +945,15 @@ color: white;</string>
          <property name="text">
           <string/>
          </property>
+         <property name="dragEnabled">
+          <bool>true</bool>
+         </property>
         </widget>
         <widget class="QLabel" name="label_25">
          <property name="geometry">
           <rect>
            <x>10</x>
-           <y>110</y>
+           <y>50</y>
            <width>71</width>
            <height>21</height>
           </rect>
@@ -956,82 +962,42 @@ color: white;</string>
           <string>生成路径</string>
          </property>
         </widget>
-        <widget class="QCheckBox" name="checkBox_replace_IPC">
-         <property name="geometry">
-          <rect>
-           <x>80</x>
-           <y>80</y>
-           <width>121</width>
-           <height>21</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>替换IPC原始数据</string>
-         </property>
-        </widget>
-        <widget class="QCheckBox" name="checkBox_Detail_IPC">
-         <property name="geometry">
-          <rect>
-           <x>210</x>
-           <y>80</y>
-           <width>121</width>
-           <height>21</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>IPC数据详细内容</string>
-         </property>
-        </widget>
-        <widget class="QCheckBox" name="checkBox_Reserve_IPC">
-         <property name="geometry">
-          <rect>
-           <x>340</x>
-           <y>80</y>
-           <width>111</width>
-           <height>21</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>保留其他Log内容</string>
-         </property>
-        </widget>
         <widget class="QLabel" name="label_27">
          <property name="geometry">
           <rect>
            <x>10</x>
            <y>20</y>
-           <width>151</width>
+           <width>71</width>
            <height>21</height>
           </rect>
          </property>
          <property name="text">
-          <string>Log文件或文件夹路径</string>
+          <string>Log文件</string>
          </property>
         </widget>
-        <widget class="QRadioButton" name="radioButton_MCULOG">
+        <widget class="QPushButton" name="button_ipcparse_tip">
          <property name="geometry">
           <rect>
-           <x>370</x>
-           <y>20</y>
-           <width>89</width>
-           <height>21</height>
+           <x>340</x>
+           <y>80</y>
+           <width>100</width>
+           <height>23</height>
           </rect>
          </property>
-         <property name="text">
-          <string>MCU LOG</string>
+         <property name="minimumSize">
+          <size>
+           <width>100</width>
+           <height>0</height>
+          </size>
          </property>
-        </widget>
-        <widget class="QRadioButton" name="radioButton_SOCLOG">
-         <property name="geometry">
-          <rect>
-           <x>460</x>
-           <y>20</y>
-           <width>89</width>
-           <height>21</height>
-          </rect>
+         <property name="maximumSize">
+          <size>
+           <width>100</width>
+           <height>16777215</height>
+          </size>
          </property>
          <property name="text">
-          <string>SOC LOG</string>
+          <string>生成tips</string>
          </property>
         </widget>
        </widget>
@@ -1040,20 +1006,20 @@ color: white;</string>
          <rect>
           <x>10</x>
           <y>40</y>
-          <width>181</width>
+          <width>431</width>
           <height>21</height>
          </rect>
         </property>
         <property name="text">
-         <string>IPC协议文件中的MCU Log 描述：</string>
+         <string>可添加 IPC协议 中可由hex直接转换成ascii码的描述（如mcu log等，用 | 隔开）：</string>
         </property>
        </widget>
        <widget class="QLineEdit" name="lineEditinputIPC_doc_2">
         <property name="geometry">
          <rect>
-          <x>190</x>
-          <y>40</y>
-          <width>331</width>
+          <x>80</x>
+          <y>70</y>
+          <width>441</width>
           <height>21</height>
          </rect>
         </property>

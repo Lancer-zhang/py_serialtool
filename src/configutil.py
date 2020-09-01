@@ -5,13 +5,16 @@ import configparser
 class configParser:
     def __init__(self):
         self.config = configparser.ConfigParser()
-        if not os.path.isfile('config.ini'):
+        config_file = os.getcwd() + "\\config\\config.ini"
+        if not os.path.isfile(config_file):
             self.config['showCfg'] = {'show_format': 'asc',
                                       'show_time': '1'}
             self.config['sendCfg'] = {'send_format': 'asc', 'auto_send_cnt': '0', 'auto_send_time': '0',
                                       'porting_send_cnt': '0', 'porting_send_time': '0'}
             self.config['windowHide'] = {'right': '0', 'send_button': '0', 'send_line': '0'}
-            self.config['ipcCfg'] = {'document': 'D:/00_personal/py_lesson/myCmdParser/ipc_par_inject.xml'}
+            self.config['ipcCfg'] = {'document': 'D:/00_personal/py_lesson/myCmdParser/ipc_par_inject.xml',
+                                     'logdescription': 'MTS Log Ifo',
+                                     'outputfile': 'D:/00_personal/py_lesson/myCmdParser/serialtool/py_serialtool/data'}
             self.config['sendRecord'] = {'send1': '', 'send2': '', 'send3': '', 'send4': '', 'send5': '',
                                          'send6': '', 'send7': '', 'send8': '', 'send9': '', 'send10': '',
                                          'autoSend': '',
@@ -19,10 +22,10 @@ class configParser:
                                          'portingSend4': '', 'portingSend5': '', 'portingSend6': '',
                                          'portingSend7': '', 'portingSend8': '', 'portingSend9': '', 'portingSend10': ''
                                          }
-            with open('config.ini', 'w') as configfile:
+            with open(config_file, 'w') as configfile:
                 self.config.write(configfile)
 
-        self.config.read('config.ini')
+        self.config.read(config_file)
         print(self.config.sections())
 
     def is_show_time(self):
@@ -30,6 +33,12 @@ class configParser:
 
     def get_ipc_document(self):
         return self.config.get('ipcCfg', 'document')
+
+    def get_ipc_logdescription(self):
+        return self.config.get('ipcCfg', 'logdescription')
+
+    def get_ipc_logoutput(self):
+        return self.config.get('ipcCfg', 'outputfile')
 
     def get_show_format(self):
         return self.config.get('showCfg', 'show_format')
@@ -133,7 +142,8 @@ class configParser:
         self.config.set('sendCfg', 'porting_send_time', time)
 
     def write_to_config(self):
-        with open('config.ini', 'w') as configfile:
+        config_file = os.getcwd() + "\\config\\config.ini"
+        with open(config_file, 'w') as configfile:
             self.config.write(configfile)
             configfile.close()
 

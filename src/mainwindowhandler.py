@@ -51,7 +51,8 @@ class MyMainWindow(QMainWindow, UI_main.Ui_MainWindow):
 
         self.ipcParse = Ipc.ipcHandler()
         self.lineEditinputIPC_doc.setText(self.cfgPar.get_ipc_document())
-
+        self.lineEditinputIPC_doc_2.setText(self.cfgPar.get_ipc_logdescription())
+        self.lineEditinputIPC_file_obj.setText(self.cfgPar.get_ipc_logoutput())
         # 子窗口需要为主窗口的成员变量，否则子窗口会一闪而过
         self.newConnect = NC_handler.MyNewConnect()  # 新连接的窗口
         self.openConnect = OC_handler.MyOpenConnect()  # 打开的窗口
@@ -159,6 +160,8 @@ class MyMainWindow(QMainWindow, UI_main.Ui_MainWindow):
         self.ser.SerialSignal.connect(self.slot_Serial_emit)
 
         self.button_ipcparse.clicked.connect(self.slot_ipc_data_parse)  # ipc单条数据解析
+        self.button_ipcparse_2.clicked.connect(self.slot_ipc_file_parse)
+        self.button_ipcparse_tip.clicked.connect(self.slot_ipc_tip_generate)
         self.button_transchar.clicked.connect(self.slot_hex_to_ascii)  # 十六进制转换ascii码
         self.button_transHEX.clicked.connect(self.slot_ascii_to_hex)  # ascii码转换十六进制
 
@@ -442,12 +445,35 @@ class MyMainWindow(QMainWindow, UI_main.Ui_MainWindow):
         outStr = ''
         inputStr = self.lineEditinputIPC.text()
         inputXml = self.lineEditinputIPC_doc.text()
+        inputLog = self.lineEditinputIPC_doc_2.text()
         self.textEditoutputIPC.clear()
         if inputXml.endswith('.xml') and inputXml != self.cfgPar.get_ipc_document():
             self.cfgPar.set_config('ipcCfg', 'document', inputXml)
+        if inputLog != self.cfgPar.get_ipc_logdescription():
+            self.cfgPar.set_config('ipcCfg', 'logdescription', inputLog)
+        inputlog_list = inputLog.split('|')
         if inputStr is not '':
-            outStr = self.ipcParse.parseIpcData(inputStr, inputXml)
+            outStr = self.ipcParse.parseIpcData(inputStr, inputXml, inputlog_list)
         self.textEditoutputIPC.insertPlainText(outStr)
+
+    def slot_ipc_tip_generate(self):
+        self.ipcParse.generate_tips_file(self.lineEditinputIPC_doc.text())
+
+    def slot_ipc_file_parse(self):
+        outfile = self.lineEditinputIPC_file_obj.text()
+        inputfile = self.lineEditinputIPC_file_src.text()
+        inputXml = self.lineEditinputIPC_doc.text()
+        inputLog = self.lineEditinputIPC_doc_2.text()
+        self.textEditoutputIPC.clear()
+        if inputXml.endswith('.xml') and inputXml != self.cfgPar.get_ipc_document():
+            self.cfgPar.set_config('ipcCfg', 'document', inputXml)
+        if outfile != self.cfgPar.get_ipc_logoutput():
+            self.cfgPar.set_config('ipcCfg', 'outputfile', outfile)
+        if inputLog != self.cfgPar.get_ipc_logdescription():
+            self.cfgPar.set_config('ipcCfg', 'logdescription', inputLog)
+        inputlog_list = inputLog.split('|')
+        if inputfile.endswith('.txt'):
+            self.ipcParse.parseIpcFile_soc(inputfile, outfile, inputXml, inputlog_list)
 
     def slot_hex_to_ascii(self):
         outStr = ''

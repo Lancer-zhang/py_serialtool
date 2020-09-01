@@ -1,0 +1,79 @@
+'000000': <--- STM Notify Link Start
+'000001': <--- STM Send Link Heart
+'000002': <--- STM Request Heart Close
+'000003': <--- STM Request Heart Open
+'000004': <--- STM Notify Finish PowerOff Prepare
+'000005': <--- STM Notify Fast Sleep
+'000007': <--- STM Diagnosis timeout
+000008: <--> MTSorSTM reset SN
+'000100': '---> MTS Request PowerOff Prepare'
+'000101': '---> MTS Request PowerOff Operate'
+'000102': '---> MTS Request Recover'
+'000103': '---> MTS Request PowerReset'
+'000105': '---> MTS Soc WorkState'
+'010300': <--- STM Mute setting
+'020000': '---> MTS ACC Signal'
+'020001': '---> MTS ILL Signal'
+'020002': '---> MTS Reverse Signal'
+'020003': '---> MTS Park Signal'
+'020005': '---> MTS IGN Signal'
+020009: '---> MTS TCUACC Signal'
+'020101': '---> MTS Door Status'
+'020104': '---> MTS VehicleSpeed'
+'020106': '---> MTS FuelValue'
+'020107': '---> MTS MaintenanceOdometer'
+020109: '---> MTS Report ECUs State'
+02010A: '---> MTS SteeringWheelAngle'
+'020110': '---> MTS Gear Info'
+'020111': '---> MTS AvgFuel'
+02020B: <--- STM Ctrl AirBlowLevel
+02020C: <--- STM Ctrl AirExpectTemp
+02020D: '---> MTS Ctrl AirStatus Feedback'
+'020211': <--- STM Ctrl Light
+'020412': '---> MTS EPB Status'
+'020413': '---> MTS Auto Light SW Status'
+'020515': <--- STM AC overall control
+'020516': <--- STM AC Recirc VR control
+'020517': <--- STM AC AC VR control
+020518: <--- STM AC SYNC VR control
+020519: <--- STM AC Redeforst VR control
+02051A: <--- STM AC ONOFF VR control
+02051B: <--- STM AC Air MAX VR control
+02051C: <--- STM enable auto light
+02051D: <--- STM tunnel infomation
+02051E: <--- STM AC Deforst VR control
+'030000': <--> MTSorSTM KeyValueAndStatus
+'030100': <--> MTSorSTM BT Status
+'030200': '---> MTS Set SystemTime'
+'030201': <--- STM Set SystemTime
+'030202': <--- STM Set DayMode
+'030203': <--- STM Set Day BL Level
+'030204': <--- STM Set Night BL Level
+'030205': <--- STM BackLight CMD
+'030206': '---> MTS BL Status'
+'030207': <--- STM Ask Restart
+030209: '---> MTS send Restart type'
+'030600': '---> MTS SoftwareVersion'
+'030601': '---> MTS HardwareVersion'
+'030607': <--- STM AndroidVersion
+'030700': '---> MTS PassThrough Cmd'
+'030701': <--- STM PassThrough
+'030702': '---> MTS AutoTest'
+'030703': <--- STM AutoTest
+'030704': '---> MTS Log Ifo'
+030900: <--- STM GPS ErrorStatus
+030901: <--- STM GPSAnt OpenStatus
+030902: <--- STM GPSAnt ShortStatus
+030B00: <--- STM VehicleType
+030B11: '---> MTS Config FeedBack'
+030B12: '---> MTS EQPin Config'
+030B13: '---> MTS RVMorAVM Type'
+030B14: '---> MTS VehicleType'
+030B15: <--- STM Parameters Inquire
+030B16: '---> MTS Parameters Feedback'
+'040400': <--- STM Request GPS Status
+'040401': '---> MTS GPS Status Feedback'
+'050001': '---> MTS Fuel Low Warning'
+1F0000: <--- STM Request Upgrade
+1F0105: <--- STM Set Upgrade Type
+1F0304: '---> MTS OTA Upgrade start'

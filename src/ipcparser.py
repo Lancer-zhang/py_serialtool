@@ -66,7 +66,7 @@ class ipc_parser:
                                   self.__et_unpack.value, self.__rws_unpack.value,))
 
     def __ipc_unpack_data(self):
-        self.__print_to_result('pt:%02X cid:%02X sn:%02X len_app:%04X app_num:%02X'
+        self.__print_to_result('pt:%02X | cid:%02X | sn:%02X | len_app:%04X | app_num:%02X'
                                % (self.__pt_unpack.value, self.__cid_unpack.value, self.__sn_unpack.value,
                                   self.__len_app_unpack.value, self.__appl_len_unpack.value))
 
@@ -75,8 +75,8 @@ class ipc_parser:
         for i in range(self.__appl_len_unpack.value):
             tmp = ''.join(
                 ["%02X " % x for x in self.__appl_list[i]['appl_data'][:self.__appl_list[i]['appl_len']]]).strip()
-            self.__print_to_result('appno:%02X tag1:%02X tag2:%02X tag3:%02X len:%02X value:%s'
-                                   % (i, self.__appl_list[i]['tag1'], self.__appl_list[i]['tag2'],
+            self.__print_to_result('tag1:%02X | tag2:%02X | tag3:%02X | len:%02X \nvalue:%s'
+                                   % (self.__appl_list[i]['tag1'], self.__appl_list[i]['tag2'],
                                       self.__appl_list[i]['tag3'],
                                       self.__appl_list[i]['appl_len'], tmp))
 
