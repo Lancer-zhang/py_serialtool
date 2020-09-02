@@ -59,6 +59,8 @@ class MyMainWindow(QMainWindow, UI_main.Ui_MainWindow):
 
         self.buildConnect()
         self.slot_change_transfer()
+        self.actionDisconnect.setEnabled(False)
+        self.actionRe_Connect.setEnabled(False)
         self.slot_OpenConnect()
         # TODO
         self.lineEdit_source2.setEnabled(False)
@@ -144,8 +146,8 @@ class MyMainWindow(QMainWindow, UI_main.Ui_MainWindow):
         self.actionNew.triggered.connect(self.slot_NewConnect)
         self.actionOpen.triggered.connect(self.slot_OpenConnect)
 
-        self.actionDisconnect.triggered.connect(self.ser.port_close)
-        self.actionRe_Connect.triggered.connect(self.ser.port_connect)
+        self.actionDisconnect.triggered.connect(self.slot_close_port)
+        self.actionRe_Connect.triggered.connect(self.slot_reconnect)
 
         self.actionTime.triggered.connect(self.slot_show_time)  # 显示时间
         self.actionASCII.triggered.connect(self.slot_show_asc)
@@ -167,6 +169,21 @@ class MyMainWindow(QMainWindow, UI_main.Ui_MainWindow):
 
         self.buttonstartTrans.clicked.connect(self.slot_start_transfer)  # 文件格式转换
         self.comboBoxfiletrans.currentIndexChanged.connect(self.slot_change_transfer)  # 文件格式转换功能选择
+
+    def slot_close_port(self):
+        self.ser.port_close()
+        if self.ser.serial.isOpen():
+            self.textEditRecvive.insertPlainText(self.ser.serial.port + " can not be closed\r\n")
+        else:
+            self.textEditRecvive.insertPlainText(self.ser.serial.port + " is closed\r\n")
+
+    def slot_reconnect(self):
+        self.ser.port_close()
+        self.ser.port_connect()
+        if self.ser.serial.isOpen():
+            self.textEditRecvive.insertPlainText(self.ser.serial.port + " is connected\r\n")
+        else:
+            self.textEditRecvive.insertPlainText(self.ser.serial.port + " can not be connected\r\n")
 
     def parse_sendMessage(self, text):
         text_list = text.split(' ')
@@ -326,6 +343,7 @@ class MyMainWindow(QMainWindow, UI_main.Ui_MainWindow):
             if self.ser.serial.isOpen():
                 self.textEditRecvive.insertPlainText(dic['port'] + " is connected\r\n")
                 self.actionRe_Connect.setEnabled(True)
+                self.actionDisconnect.setEnabled(True)
             else:
                 self.textEditRecvive.insertPlainText(dic['port'] + " can not be connected\r\n")
         elif flag == 1:
@@ -361,6 +379,8 @@ class MyMainWindow(QMainWindow, UI_main.Ui_MainWindow):
             textCursor = self.textEditRecvive.textCursor()
             textCursor.movePosition(textCursor.End)
             self.textEditRecvive.setTextCursor(textCursor)
+        elif flag == 'error':
+            self.ser.port_close()
 
     def slot_show_time(self):
         value = True if self.actionTime.isChecked() else False

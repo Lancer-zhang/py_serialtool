@@ -1,12 +1,10 @@
-import binascii
-
 import serial
 # pip install pyserial
 import serial.tools.list_ports
 import threading
 import time
 from PyQt5.QtWidgets import QMessageBox
-from PyQt5.QtCore import QTimer, QObject
+from PyQt5.QtCore import QObject
 from PyQt5.QtCore import pyqtSignal
 
 
@@ -45,23 +43,27 @@ class serialProcess(QObject):
     def port_connect(self):
         try:
             if self.serial.port is not None and not self.serial.isOpen():
-                print("open " + self.serial.port)
+
                 self.serial.open()
                 if self.serial.isOpen():
-                    self.read_thread.start(self.port_receive)
+                    print(self.serial.port + " opened")
+                    if not self.read_thread.alive:
+                        print("1")
+                        self.read_thread.start(self.port_receive)
+                    else:
+                        print("2")
+                        self.read_thread.stop()
+                        self.read_thread.start(self.port_receive)
             else:
                 print("can not open")
-        except:
-            print("can not open " + self.serial.port)
+        except Exception as e:
+            print(e)
             return None
 
     def port_close(self):
         if self.serial.isOpen():
-            #   self.timer_rec.stop()
             self.read_thread.stop()
             print("close " + self.serial.port)
-            #   self.SerialSignal.disconnect()
-            # self.timer_send.stop()
             try:
                 self.serial.close()
             except:
@@ -69,18 +71,22 @@ class serialProcess(QObject):
 
     def port_send(self, data):
         if self.serial.isOpen():
-            self.serial.write(data)
+            try:
+                self.serial.write(data)
+            except:
+                pass
         else:
             pass
 
     def port_receive(self):
-        while self.read_thread.alive:
+        while self.read_thread.alive and self.serial.isOpen():
             # self.read_thread.waiting()
             time.sleep(0.05)  # 10ms
             try:
                 num = self.serial.inWaiting()
-            except:
-                self.port_close()
+            except Exception as e:
+                print(e)
+                self.SerialSignal.emit('error', 'close')
                 return None
             data = self.serial.read(num)
             if len(data) > 0:
