@@ -3,6 +3,7 @@ import re
 import yaml
 import chartranshandler
 
+
 import ipcparser
 import os
 
@@ -20,18 +21,22 @@ class ipcHandler:
                 ipcList[0]['tag1'], ipcList[0]['tag2'], ipcList[0]['tag3'])
             patDes = r'Description = "[\w ]+"'
             patInd = r'Indication = "\w*"'
+            print(ipcOutStr, ipcList)
             with codecs.open(ipc_xml, "r", encoding='utf-8', errors='ignore') as fData:
                 content = fData.read()
-                resultStr = re.findall(pat, content)[0]
-                resultDes = re.findall(patDes, resultStr)[0]
-                resultInd = re.findall(patInd, resultStr)[0]
                 fData.close()
-            resultLog_s = ''
-            for log_description in log_description_list:
-                if str(log_description) in resultDes:
-                    resultLog_b = ipcList[0]['appl_data']
-                    resultLog_s = '\nLog decode :' + resultLog_b.decode('utf-8', 'ignore')
-            return ipcOutStr + resultDes + ' ' + resultInd + resultLog_s
+                print("1")
+                resultStr = re.findall(pat, content)
+                if len(resultStr) > 0:
+                    resultDes = re.findall(patDes, resultStr[0])[0]
+                    resultInd = re.findall(patInd, resultStr[0])[0]
+                    resultLog_s = ''
+                    for log_description in log_description_list:
+                        if str(log_description) in resultDes:
+                            resultLog_b = ipcList[0]['appl_data']
+                            resultLog_s = '\nLog decode :' + resultLog_b.decode('utf-8', 'ignore')
+                    return ipcOutStr + resultDes + ' ' + resultInd + resultLog_s
+            return ipcOutStr
 
     def generate_tips_file(self, inputXml):
         pat = r'<ApplInfo  TAG0=.+\n.+\>'
@@ -123,6 +128,5 @@ class ipcHandler:
                 output_file.close()
             os.system(cmd2)
 
-    def parseIpcFileDir_soc(self, ipcFile):
-        pass
+
 

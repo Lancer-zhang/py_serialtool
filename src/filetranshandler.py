@@ -4,16 +4,48 @@ import re
 from struct import *
 
 
-# def crc24(crc, firstbyte, secondbyte):
-#    crcpoly = 0x80001B
-#    #print(type(firstbyte),type(secondbyte))
-#    data_word = (secondbyte << 8) | firstbyte
-#    result = ((crc << 1) ^ data_word)
+def crc24(crc, firstbyte, secondbyte):
+    crcpoly = 0x80001B
+    data_word = (secondbyte << 8) | firstbyte
+    result = ((crc << 1) ^ data_word)
 
-#    if result & 0x1000000:
-#        result ^= crcpoly
+    if result & 0x1000000:
+        result ^= crcpoly
+    return result
 
-#    return result
+
+def bin2htxt_crc(inputfile, outputfile):
+    if str(inputfile).endswith('.bin') and str(outputfile).endswith('.txt'):
+        file = open(inputfile, 'rb')
+        fsize = os.path.getsize(inputfile)
+        val = file.read()
+        file.close()
+
+        with open(outputfile, 'w') as nfile:
+            # write head info
+            nfile.write("const uint8_t buf[]={" + "\n")
+            w_cnt = 0
+            crc = 0
+            b_cnt = 0
+            nfile.write("\t\t")
+            while w_cnt < fsize:
+                nfile.write(str(hex(val[w_cnt])) + ",")
+                #            crc += val[w_cnt]
+                b_cnt += 1
+                if b_cnt == 2:
+                    b_cnt = 0
+                    crc = crc24(crc, val[w_cnt - 1], val[w_cnt])
+                w_cnt += 1
+                if (w_cnt % 16) == 0:
+                    nfile.write("\n")
+                    nfile.write("\t\t")
+                #        nfile.write(str(hex(crc)) + "};" + "\n")
+            if b_cnt == 1:
+                crc = crc24(crc, val[w_cnt - 1], 0)
+            nfile.write(str(hex((crc >> 16) & 0xff)) + "," + str(hex((crc >> 8) & 0xff)) + "," + str(
+                hex((crc >> 0) & 0xff)) + "};" + "\n")
+    return
+
 
 def binToHex(src, obj, src_start):
     from intelhex import bin2hex
