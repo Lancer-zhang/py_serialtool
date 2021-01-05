@@ -24,5 +24,5 @@ def ascii2hex(inputS):
         except ValueError:
             return 'Error source, Please check it!'
         str_hex = str_hex[2:].strip()
-        output_s = output_s + ' ' + str(num)
+        output_s = output_s + ' ' + str(num)[2:]
     return output_s

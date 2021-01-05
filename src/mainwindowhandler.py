@@ -148,6 +148,7 @@ class MyMainWindow(QMainWindow, UI_main.Ui_MainWindow):
 
         self.actionDisconnect.triggered.connect(self.slot_close_port)
         self.actionRe_Connect.triggered.connect(self.slot_reconnect)
+        self.actionClear_All.triggered.connect(self.slot_clear_all)
 
         self.actionTime.triggered.connect(self.slot_show_time)  # 显示时间
         self.actionASCII.triggered.connect(self.slot_show_asc)
@@ -185,6 +186,9 @@ class MyMainWindow(QMainWindow, UI_main.Ui_MainWindow):
         else:
             self.textEditRecvive.insertPlainText(self.ser.serial.port + " can not be connected\r\n")
 
+    def slot_clear_all(self):
+        self.textEditRecvive.clear()
+
     def parse_sendMessage(self, text):
         text_list = text.split(' ')
         if "" != text:
@@ -220,7 +224,7 @@ class MyMainWindow(QMainWindow, UI_main.Ui_MainWindow):
     def slot_SendMessage(self):
         text = self.lineEditSend.currentText().strip()
         input_s = self.parse_sendMessage(text)
-        if input_s is not '':
+        if input_s != '':
             self.ser.port_send(input_s)
             if self.lineEditSend.itemText(0) == text:
                 pass
@@ -231,7 +235,8 @@ class MyMainWindow(QMainWindow, UI_main.Ui_MainWindow):
     def slot_SendMessage2(self):
         text = self.lineEdit.text().strip()
         input_s = self.parse_sendMessage(text)
-        if input_s is not '':
+        if input_s != '':
+            print("send")
             self.ser.port_send(input_s)
         else:
             self.ser.port_send('\n'.encode('utf-8'))
@@ -245,7 +250,7 @@ class MyMainWindow(QMainWindow, UI_main.Ui_MainWindow):
             self.auto_send_message = self.parse_sendMessage(text)
             self.auto_send_cnt = self.spinBoxcnt1.value()
             time = self.spinBoxtime1.value()
-            if self.auto_send_message is not '':
+            if self.auto_send_message != '':
                 self.cfgPar.set_auto_send(text, str(self.auto_send_cnt), str(time))
             self.lineEditsend1.setEnabled(False)
             self.spinBoxtime1.setEnabled(False)
@@ -261,14 +266,14 @@ class MyMainWindow(QMainWindow, UI_main.Ui_MainWindow):
 
     def send_message_auto(self):
         if self.auto_send_cnt > 0:
-            if self.auto_send_message is not '':
+            if self.auto_send_message != '':
                 self.ser.port_send(self.auto_send_message)
                 self.textEditRecvive.moveCursor(QTextCursor.End)
                 self.auto_send_cnt = self.auto_send_cnt - 1
         elif self.auto_send_cnt == 0:
             self.slot_SendMessage_auto()
         elif self.auto_send_cnt == -1:
-            if self.auto_send_message is not '':
+            if self.auto_send_message != '':
                 self.ser.port_send(self.auto_send_message)
                 self.textEditRecvive.moveCursor(QTextCursor.End)
 
@@ -472,7 +477,7 @@ class MyMainWindow(QMainWindow, UI_main.Ui_MainWindow):
         if inputLog != self.cfgPar.get_ipc_logdescription():
             self.cfgPar.set_config('ipcCfg', 'logdescription', inputLog)
         inputlog_list = inputLog.split('|')
-        if inputStr is not '':
+        if inputStr != '':
             outStr = self.ipcParse.parseIpcData(inputStr, inputXml, inputlog_list)
         self.textEditoutputIPC.insertPlainText(outStr)
 

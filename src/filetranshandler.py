@@ -50,7 +50,7 @@ def bin2htxt_crc(inputfile, outputfile):
 def binToHex(src, obj, src_start):
     from intelhex import bin2hex
     if str(src).endswith('.bin') and str(obj).endswith('.hex'):
-        if src_start is '':
+        if src_start == '':
             offset = 0
         else:
             offset = int(src_start, 16)
@@ -64,7 +64,7 @@ def hexToBin(src, src_start, src_end, obj, obj_start, obj_end, pad):
         s_start = int(src_start, 16)
         s_end = int(src_end, 16)
         padding = int(pad, 16)
-        if obj_start is not '' and obj_end is not '':
+        if obj_start != '' and obj_end != '':
             start = int(obj_start, 16)
             end = int(obj_end, 16)
             size = end - start
