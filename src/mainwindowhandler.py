@@ -1,16 +1,22 @@
 from PyQt5 import QtGui
 from PyQt5.QtCore import QTimer
 from PyQt5.QtGui import QTextCursor
+
 import mainwindow as UI_main
 import newconnecthandler as NC_handler
 import openconnecthandler as OC_handler
-from PyQt5.QtWidgets import QMainWindow
+from PyQt5.QtWidgets import QMainWindow, QGridLayout
 import serialprocess as mySerial
 from PyQt5.QtWidgets import QMessageBox
 import configutil as Config
 import ipchandler as Ipc
 import chartranshandler
 import filetranshandler
+import plotterhandler as Plotter
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.backends.backend_qt5 import NavigationToolbar2QT as NavigationToolbar
+from PyQt5.QtCore import pyqtSlot
+import numpy as np
 
 
 class MyMainWindow(QMainWindow, UI_main.Ui_MainWindow):
@@ -57,6 +63,22 @@ class MyMainWindow(QMainWindow, UI_main.Ui_MainWindow):
         self.newConnect = NC_handler.MyNewConnect()  # 新连接的窗口
         self.openConnect = OC_handler.MyOpenConnect()  # 打开的窗口
 
+        # plotter init start
+        self.fig = Plotter.dynamic_fig(width=5, height=3, dpi=72)
+        # add NavigationToolbar in the figure (widgets)
+        self.fig_ntb = NavigationToolbar(self.fig, self)
+        # add the dynamic_fig in the Plot box
+        self.gridlayout = QGridLayout(self.groupBox_plot)
+        self.gridlayout.addWidget(self.fig)
+        self.gridlayout.addWidget(self.fig_ntb)
+        # initialized flags for static/dynamic plot: on is 1,off is 0
+        self._timer = QTimer(self)
+        self._t = 1
+        self._counts = []
+        self._delay_t = []
+        self._update_on = 0
+        # plotter init end
+
         self.buildConnect()
         self.slot_change_transfer()
         self.actionDisconnect.setEnabled(False)
@@ -75,7 +97,7 @@ class MyMainWindow(QMainWindow, UI_main.Ui_MainWindow):
                 i = 0
                 while i < count:
                     text = self.lineEditSend.itemText(i)
-                    self.cfgPar.set_config('sendRecord', 'send'+str(i), text)
+                    self.cfgPar.set_config('sendRecord', 'send' + str(i), text)
                     i = i + 1
             self.cfgPar.write_to_config()
             self.ser.port_close()
@@ -167,6 +189,7 @@ class MyMainWindow(QMainWindow, UI_main.Ui_MainWindow):
         self.button_ipcparse_tip.clicked.connect(self.slot_ipc_tip_generate)
         self.button_transchar.clicked.connect(self.slot_hex_to_ascii)  # 十六进制转换ascii码
         self.button_transHEX.clicked.connect(self.slot_ascii_to_hex)  # ascii码转换十六进制
+        self.button_transspace.clicked.connect(self.slot_hex_add_space)  # ascii码转换十六进制
 
         self.buttonstartTrans.clicked.connect(self.slot_start_transfer)  # 文件格式转换
         self.comboBoxfiletrans.currentIndexChanged.connect(self.slot_change_transfer)  # 文件格式转换功能选择
@@ -288,7 +311,7 @@ class MyMainWindow(QMainWindow, UI_main.Ui_MainWindow):
                     if sendMessage != '':
                         self.polling_send_message_list.append(sendMessage)
                         print(i, text)
-                        self.cfgPar.set_polling_send_message(str(i+1), text)
+                        self.cfgPar.set_polling_send_message(str(i + 1), text)
                 self.polling_lineEdit[i].setEnabled(False)
                 self.polling_checkbox[i].setEnabled(False)
             print(self.polling_send_message_list)
@@ -516,6 +539,14 @@ class MyMainWindow(QMainWindow, UI_main.Ui_MainWindow):
             outStr = chartranshandler.ascii2hex(inputStr)
         self.textEdit_aftertrans.insertPlainText(outStr)
 
+    def slot_hex_add_space(self):
+        outStr = ''
+        inputStr = self.textEdit_beforetrans.toPlainText()
+        self.textEdit_aftertrans.clear()
+        if inputStr is not '':
+            outStr = chartranshandler.hexaddspace(inputStr)
+        self.textEdit_aftertrans.insertPlainText(outStr)
+
     def slot_start_transfer(self):
         index = self.comboBoxfiletrans.currentIndex()
         if index is 0:
@@ -557,3 +588,51 @@ class MyMainWindow(QMainWindow, UI_main.Ui_MainWindow):
             self.lineEdit_start3.setEnabled(False)
             self.lineEdit_end3.setEnabled(False)
             self.lineEdit_pad.setEnabled(False)
+
+    @pyqtSlot()
+    def on_pushButton_plot_clicked(self):
+        print('start dynamic ploting')
+        if self._update_on == 0:
+            self._update_on = 1
+            self._timer.timeout.connect(self.update_fig)
+            self._timer.start(100)  # plot after 1s delay
+        elif self._update_on == 1:
+            self._update_on = 0
+            self._timer.timeout.disconnect(self.update_fig)
+            self._timer.stop()
+
+    def update_fig(self):
+        self._t += 1
+        print(self._t)
+        self._delay_t.append(self._t)
+        print(self._delay_t)
+        # new_counts=random.randint(100,900)
+        new_counts = 2 * self._t - self._t * np.cos(self._t / 2 / np.pi * 1000)
+        self._counts.append(new_counts)
+        print(self._counts)
+        self.fig.axes.cla()
+        self.fig.axes.plot(self._delay_t, self._counts, '-ob')
+        self.fig.axes.set_title("signals", fontsize=18, color='c')
+        self.fig.axes.set_xlabel("delay(s)", fontsize=18, color='c')
+        self.fig.axes.set_ylabel("counts", fontsize=18, color='c')
+        self.fig.draw()
+
+
+    # @pyqtSlot()
+    # def on_Erase_plot_clicked(self):
+    #     self.fig1.axes.cla()
+    #     self.fig1.draw()
+    #     self.fig2.axes.cla()
+    #     self.fig2.draw()
+    #     if self._update_on == 1:
+    #         self._update_on = 0
+    #         self._delay_t = []
+    #         self._counts = []
+    #         self.fig2.axes.cla()
+    #         self.fig2.draw()
+    #         self._timer.timeout.disconnect(self.update_fig)
+    #         self.dynamic_plot.setEnabled(True)
+    #     else:
+    #         pass
+    #     self.Static_plot.setEnabled(True)
+        # self.Erase_plot.setEnabled(False)

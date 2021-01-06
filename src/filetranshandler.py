@@ -68,6 +68,8 @@ def hexToBin(src, src_start, src_end, obj, obj_start, obj_end, pad):
             start = int(obj_start, 16)
             end = int(obj_end, 16)
             size = end - start
+        else:
+            size = s_end - s_start
         hex2bin(src, obj, s_start, s_end, size, padding)
 
 

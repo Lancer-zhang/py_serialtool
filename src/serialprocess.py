@@ -81,7 +81,7 @@ class serialProcess(QObject):
     def port_receive(self):
         while self.read_thread.alive and self.serial.isOpen():
             # self.read_thread.waiting()
-            time.sleep(0.05)  # 10ms
+            time.sleep(0.01)  # 10ms
             try:
                 num = self.serial.inWaiting()
             except Exception as e:

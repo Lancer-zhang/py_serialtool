@@ -1,4 +1,7 @@
 import binascii
+import re
+
+from PyQt5.QtWidgets import QMessageBox
 
 
 def hex2ascii(inputS):
@@ -26,3 +29,8 @@ def ascii2hex(inputS):
         str_hex = str_hex[2:].strip()
         output_s = output_s + ' ' + str(num)[2:]
     return output_s
+
+
+def hexaddspace(inputS):
+    result = re.sub(r"(?<=\w)(?=(?:\w\w)+$)", " ", inputS)
+    return result
