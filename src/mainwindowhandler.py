@@ -1,3 +1,7 @@
+import time
+import datetime
+from random import random
+
 from PyQt5 import QtGui
 from PyQt5.QtCore import QTimer
 from PyQt5.QtGui import QTextCursor
@@ -73,9 +77,15 @@ class MyMainWindow(QMainWindow, UI_main.Ui_MainWindow):
         self.gridlayout.addWidget(self.fig_ntb)
         # initialized flags for static/dynamic plot: on is 1,off is 0
         self._timer = QTimer(self)
-        self._t = 1
-        self._counts = []
-        self._delay_t = []
+        self._t = 0.0
+        self.y1 = [0, ]
+        self.y2 = [0, ]
+        self.y3 = [0, ]
+        self.y4 = [0, ]
+        self._cur = [0, 0, 0, 0]
+        self._i = 0
+        self.start_flag = 0
+        self._delay_t = [0.0, ]
         self._update_on = 0
         # plotter init end
 
@@ -399,11 +409,13 @@ class MyMainWindow(QMainWindow, UI_main.Ui_MainWindow):
     def slot_Serial_emit(self, flag, data):
         if flag == 'receive':  # rec
             # hex显示
+            self.plot_data_parse(data)
+            out_str = data.decode('utf-8', 'ignore')
             if self.cfgPar.get_show_format() == 'hex':
-                out_s = chartranshandler.ascii2hex(data)
+                out_s = chartranshandler.ascii2hex(out_str)
                 self.textEditRecvive.insertPlainText(out_s)
             else:
-                self.textEditRecvive.insertPlainText(data)
+                self.textEditRecvive.insertPlainText(out_str)
             textCursor = self.textEditRecvive.textCursor()
             textCursor.movePosition(textCursor.End)
             self.textEditRecvive.setTextCursor(textCursor)
@@ -591,48 +603,99 @@ class MyMainWindow(QMainWindow, UI_main.Ui_MainWindow):
 
     @pyqtSlot()
     def on_pushButton_plot_clicked(self):
-        print('start dynamic ploting')
         if self._update_on == 0:
             self._update_on = 1
             self._timer.timeout.connect(self.update_fig)
-            self._timer.start(100)  # plot after 1s delay
+            self._timer.start(100)  # plot after 100ms delay
+            self._t = time.time()
+            self.groupBox_10.setEnabled(False)
+            self.groupBox_9.setEnabled(False)
+            self.pushButton_plot.setText("停止")
         elif self._update_on == 1:
             self._update_on = 0
             self._timer.timeout.disconnect(self.update_fig)
             self._timer.stop()
+            self.groupBox_10.setEnabled(True)
+            self.groupBox_9.setEnabled(True)
+            self.pushButton_plot.setText("开始")
 
     def update_fig(self):
-        self._t += 1
-        print(self._t)
-        self._delay_t.append(self._t)
-        print(self._delay_t)
-        # new_counts=random.randint(100,900)
-        new_counts = 2 * self._t - self._t * np.cos(self._t / 2 / np.pi * 1000)
-        self._counts.append(new_counts)
-        print(self._counts)
         self.fig.axes.cla()
-        self.fig.axes.plot(self._delay_t, self._counts, '-ob')
-        self.fig.axes.set_title("signals", fontsize=18, color='c')
-        self.fig.axes.set_xlabel("delay(s)", fontsize=18, color='c')
-        self.fig.axes.set_ylabel("counts", fontsize=18, color='c')
+        if self.checkbox_graph1.isChecked():
+            self.fig.axes.plot(self._delay_t, self.y1, color="red", marker='o')
+        if self.checkBox_graph2.isChecked():
+            self.fig.axes.plot(self._delay_t, self.y2, color="orange", marker='o')
+        if self.checkBox_graph3.isChecked():
+            self.fig.axes.plot(self._delay_t, self.y3, color="blue", marker='o')
+        if self.checkBox_graph4.isChecked():
+            self.fig.axes.plot(self._delay_t, self.y4, color="green", marker='o')
+        self.fig.axes.set_title("signals")
+        self.fig.axes.set_xlabel("time(s)")
+        self.fig.axes.set_ylabel("data")
+        self.fig.axes.grid(color='black', linestyle='--', linewidth=1, alpha=0.3)
         self.fig.draw()
 
+    @pyqtSlot()
+    def on_pushButton_pic_2_clicked(self):
+        self._delay_t = []
+        self.y1 = []
+        self.y2 = []
+        self.y3 = []
+        self.y4 = []
+        self.fig.axes.cla()
+        counts = [0, 1]
+        delay_t = [0, 1]
+        self.fig.axes.plot(delay_t, counts)
+        self.fig.axes.set_title("signals")
+        self.fig.axes.set_xlabel("time(s)")
+        self.fig.axes.set_ylabel("data")
+        self.fig.axes.grid(color='black', linestyle='--', linewidth=1, alpha=0.3)
+        self.fig.draw()
 
-    # @pyqtSlot()
-    # def on_Erase_plot_clicked(self):
-    #     self.fig1.axes.cla()
-    #     self.fig1.draw()
-    #     self.fig2.axes.cla()
-    #     self.fig2.draw()
-    #     if self._update_on == 1:
-    #         self._update_on = 0
-    #         self._delay_t = []
-    #         self._counts = []
-    #         self.fig2.axes.cla()
-    #         self.fig2.draw()
-    #         self._timer.timeout.disconnect(self.update_fig)
-    #         self.dynamic_plot.setEnabled(True)
-    #     else:
-    #         pass
-    #     self.Static_plot.setEnabled(True)
-        # self.Erase_plot.setEnabled(False)
+    def plot_data_parse(self, data):
+        if self._update_on:
+            for ch in data:
+                if ch == 0x7E and self.start_flag == 0:
+                    self.start_flag = 1
+                    continue
+                if ch == 0x55 and self.start_flag == 1:
+                    if self._i == 4:
+                        self.start_flag = 0
+                        self._i = 0
+                        if self.radioButton.isChecked():
+                            self.y1.append(self._cur[0])
+                            self.y2.append(self._cur[1])
+                            self.y3.append(self._cur[2])
+                            self.y4.append(self._cur[3])
+                        elif self.radioButton_2.isChecked():
+                            self.y1.append(self._cur[0] << 8 + self._cur[1])
+                            self.y2.append(self._cur[2] << 8 + self._cur[3])
+                        elif self.radioButton_3.isChecked():
+                            self.y1.append(self._cur[0] << 24 + self._cur[1] << 16 + self._cur[2] << 8 + self._cur[3])
+                        t = time.time()
+                        t = t - self._t
+                        self._delay_t.append(t)
+                if self.start_flag and self._i < 4:
+                    self._cur[self._i] = ch
+                    self._i = self._i + 1
+
+    @pyqtSlot()
+    def on_radioButton_clicked(self):
+        self.checkbox_graph1.setChecked(True)
+        self.checkBox_graph2.setChecked(True)
+        self.checkBox_graph3.setChecked(True)
+        self.checkBox_graph4.setChecked(True)
+
+    @pyqtSlot()
+    def on_radioButton_2_clicked(self):
+        self.checkbox_graph1.setChecked(True)
+        self.checkBox_graph2.setChecked(True)
+        self.checkBox_graph3.setChecked(False)
+        self.checkBox_graph4.setChecked(False)
+
+    @pyqtSlot()
+    def on_radioButton_3_clicked(self):
+        self.checkbox_graph1.setChecked(True)
+        self.checkBox_graph2.setChecked(False)
+        self.checkBox_graph3.setChecked(False)
+        self.checkBox_graph4.setChecked(False)

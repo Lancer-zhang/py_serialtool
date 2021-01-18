@@ -9,7 +9,7 @@ from PyQt5.QtCore import pyqtSignal
 
 
 class serialProcess(QObject):
-    SerialSignal = pyqtSignal(str, str)
+    SerialSignal = pyqtSignal(str, bytes)
 
     def __init__(self, parent=None):
         super(serialProcess, self).__init__(parent)
@@ -81,17 +81,16 @@ class serialProcess(QObject):
     def port_receive(self):
         while self.read_thread.alive and self.serial.isOpen():
             # self.read_thread.waiting()
-            time.sleep(0.01)  # 10ms
+            time.sleep(0.005)  # 1ms
             try:
                 num = self.serial.inWaiting()
             except Exception as e:
                 print(e)
-                self.SerialSignal.emit('error', 'close')
+             #   self.SerialSignal.emit('error', Null)
                 return None
             data = self.serial.read(num)
             if len(data) > 0:
-                out_str = data.decode('utf-8', 'ignore')
-                self.SerialSignal.emit('receive', out_str)
+                self.SerialSignal.emit('receive', data)
 
 
 class readThread:
